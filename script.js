@@ -4,11 +4,11 @@
 let STORE = {
     lang : "en",
     maps_src : 'https://maps.googleapis.com/maps/api/js?callback=initMap&signed_in=true&key=AIzaSyCqUuyEgb8KQ-sXs3nKkiSesNpGX4aROJw&language=',
-    openmaps_src : 'https://api.openchargemap.io/v3/poi/?output=json',
+    openmaps_src: 'https://api.openchargemap.io/v3/poi/?output=json',
     cords : [],
     currentcords : {},
     markercords : {},
-    limit : 10,
+    limit : 50,
     status : ""
 };
 
@@ -31,18 +31,44 @@ document.addEventListener('DOMContentLoaded', function () {
 let map;
 
 function initMap() {
-    map = new google.maps.Map(document.getElementById('map'), {
-        center: geoFindMe(),
-        zoom: 8
-    });
 
+    //if current cords successfully loaded
 
-    let fullurl = STORE.openmaps_src + '&countrycode=US'; 
+    function success(position) {
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: {
+                "lat": position.coords.latitude,
+                "lng": position.coords.longitude
+            },
+            zoom: 8
+        });
 
-    fetch(fullurl)
-        .then(response => response.json())
-        .then(responseJson => renderResults(responseJson))
-        .catch(error => alert(error));
+        STORE.cords.push({ "lat": position.coords.latitude, "lng": position.coords.longitude });
+
+        let fullurl = STORE.openmaps_src + "&latitued=" + STORE.cords[0].lat + "&longitude=" + STORE.cords[0].lng + "&distance=10";
+        console.log(fullurl);
+        fetch(fullurl)
+            .then(response => response.json())
+            .then(responseJson => renderResults(responseJson))
+            .catch(error => alert(error));
+    }
+
+    //if current cords fail to load
+
+    function error() {
+        STORE.status = 'Unable to retrieve your location';
+        console.log(status);
+    }
+
+    //current cords check
+    if (!navigator.geolocation) {
+        STORE.status = 'Geolocation is not supported by your browser';
+        console.log(status);
+    } else {
+        STORE.status = 'Locating…';
+        navigator.geolocation.getCurrentPosition(success, error);
+        console.log(status);
+    }
 }
 
 
@@ -56,12 +82,12 @@ function renderResults(responseJson) {
 }
 
 function renderCords(responseJson) {
-    //if (parseInt(responseJson.limit) > parseInt(responseJson.total)) {
-    //    resultno = parseInt(responseJson.total);
-    //}
-    //else {
-    //    resultno = parseInt(responseJson.maxresults);
-    //}
+    if (parseInt(responseJson.limit) > parseInt(responseJson.total)) {
+        resultno = parseInt(responseJson.total);
+    }
+    else {
+        resultno = parseInt(responseJson.maxresults);
+    }
 
     for (let i = 0; i < responseJson.length; i++) {
          STORE.reponsecords = {
@@ -106,24 +132,6 @@ function plotMarkers(cords) {
 
 function geoFindMe() {
 
-    function success(position) {
-
-        return currentcords = {
-            "lat": position.coords.latitude,
-            "lng": position.coords.longitude
-        }
-    }
-
-    function error() {
-        STORE.status = 'Unable to retrieve your location';
-    }
-
-
-    if (!navigator.geolocation) {
-        STORE.status = 'Geolocation is not supported by your browser';
-    } else {
-        STORE.status = 'Locating…';
-        navigator.geolocation.getCurrentPosition(success, error);
-    }
+    
     
 }
