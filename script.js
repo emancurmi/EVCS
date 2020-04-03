@@ -37,7 +37,7 @@ function initMap() {
     });
 
 
-    let fullurl = STORE.openmaps_src + '&countrycode=US'; 
+    let fullurl = STORE.openmaps_src + '&=US'; 
 
     fetch(fullurl)
         .then(response => response.json())
