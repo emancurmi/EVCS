@@ -101,14 +101,15 @@ function renderResults(responseJson) {
 }
 
 function renderCords(responseJson) {
-    let stationcord = { lat: 0, lng: 0 };
     
     for (let i = 0; i < responseJson.length; i++) {
 
-        stationcord.lat = parseFloat(responseJson[i].AddressInfo.Latitude);
-        stationcord.lon = parseFloat(responseJson[i].AddressInfo.Longitude);
+        let stationcord = {
+            lat = parseFloat(responseJson[i].AddressInfo.Latitude),
+            lon = parseFloat(responseJson[i].AddressInfo.Longitude)
+        };
 
-        console.log(station);
+        console.log(stationcord);
 
         GoogleMaps.stations.push(stationcord);
     }
