@@ -1,16 +1,36 @@
 ﻿'use strict';
 
-
 let STORE = {
     lang : "en",
-    maps_src : 'https://maps.googleapis.com/maps/api/js?callback=initMap&signed_in=true&key=AIzaSyCqUuyEgb8KQ-sXs3nKkiSesNpGX4aROJw&language=',
-    openmaps_src : 'https://api.openchargemap.io/v3/poi/?output=json',
-    cords : [],
-    currentcords : {},
-    markercords : {},
-    limit : 10,
-    status : ""
+    status: ""
 };
+
+let GoogleMaps = {
+    src: "https://maps.googleapis.com/maps/api/js?callback=initMap&key=AIzaSyCqUuyEgb8KQ-sXs3nKkiSesNpGX4aROJw&language=",
+    stations: []
+}
+
+let CarInfo = {
+    carbrand: "",
+    carmodel: "",
+    connectiontype: "",
+    cords: {
+        lat: 0,
+        lng: 0
+    }
+}
+
+let OpenMapsAPI = {
+    src: "https://api.openchargemap.io/v3/poi/?output=json",
+    cords: {
+        lat: 0,
+        lng: 0
+    },
+    distance: "",
+    countrycode: "",
+    connectiontypeid: "",
+    limit: 10,
+}
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -21,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         let js_file = document.createElement('script');
         js_file.type = 'text/javascript';
-        js_file.src = STORE.maps_src + STORE.lang;
+        js_file.src = GoogleMaps.src;
         document.getElementsByTagName('head')[0].appendChild(js_file);
     }
 });
@@ -31,19 +51,44 @@ document.addEventListener('DOMContentLoaded', function () {
 let map;
 
 function initMap() {
-    map = new google.maps.Map(document.getElementById('map'), {
-        center: geoFindMe(),
-        zoom: 8
-    });
 
+    //if current cords successfully loaded
+    function success(position) {
 
-    let fullurl = STORE.openmaps_src + '&=US'; 
+        CarInfo.cords.lat = OpenMapsAPI.cords.lat = parseFloat(position.coords.latitude);
+        CarInfo.cords.lng = OpenMapsAPI.cords.lng = parseFloat(position.coords.longitude);
 
-    fetch(fullurl)
-        .then(response => response.json())
-        .then(responseJson => renderResults(responseJson))
-        .catch(error => alert(error));
-}
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: {
+                "lat": CarInfo.cords.lat,
+                "lng": CarInfo.cords.lng
+            },
+            zoom: 8
+        });
+
+        GoogleMaps.stations.push()
+
+        let fullurl = OpenMapsAPI.src + "&countrycode=US" + "&latitude=" + OpenMapsAPI.cords.lat + "&longitude=" + OpenMapsAPI.cords.lng + "&distance=" + OpenMapsAPI.limit;
+        fetch(fullurl)
+            .then(response => response.json())
+            .then(responseJson => renderResults(responseJson))
+            .catch(error => alert(error));
+    }
+
+    //if current cords fail to load
+
+    function error() {
+        STORE.status = 'Unable to retrieve your location';
+    }
+
+    //current cords check
+    if (!navigator.geolocation) {
+        STORE.status = 'Geolocation is not supported by your browser';
+    } else {
+        STORE.status = 'Locating…';
+        navigator.geolocation.getCurrentPosition(success, error);
+    }
+};
 
 
 function renderResults(responseJson) {
@@ -56,22 +101,21 @@ function renderResults(responseJson) {
 }
 
 function renderCords(responseJson) {
-    //if (parseInt(responseJson.limit) > parseInt(responseJson.total)) {
-    //    resultno = parseInt(responseJson.total);
-    //}
-    //else {
-    //    resultno = parseInt(responseJson.maxresults);
-    //}
-
+    
     for (let i = 0; i < responseJson.length; i++) {
-         STORE.reponsecords = {
-            "lat": responseJson[i].AddressInfo.Latitude,
-            "lng": responseJson[i].AddressInfo.Longitude
-        }
-        STORE.cords.push(STORE.reponsecords);
+
+        let stationcord = {
+            lat = parseFloat(responseJson[i].AddressInfo.Latitude),
+            lon = parseFloat(responseJson[i].AddressInfo.Longitude)
+        };
+
+        console.log(stationcord);
+
+        GoogleMaps.stations.push(stationcord);
     }
 
-    plotMarkers(STORE.cords);
+    plotMarkers(GoogleMaps.stations);
+
 }
 
 //markers section
@@ -79,14 +123,14 @@ function renderCords(responseJson) {
 let markers;
 let bounds;
 
-function plotMarkers(cords) {
+function plotMarkers(stations) {
 
     markers = [];
     bounds = new google.maps.LatLngBounds();
 
-    for (let i = 0; i < cords.length; i++) {
-
-        let position = new google.maps.LatLng(cords[i].lat, cords[i].lng);
+    for (let i = 0; i < stations.length; i++) {
+        console.log(stations[i].lat + " " + stations[i].lng);
+        let position = new google.maps.LatLng(stations[i].lat, stations[i].lng);
 
         markers.push(
             new google.maps.Marker({
@@ -97,33 +141,6 @@ function plotMarkers(cords) {
         );
 
         bounds.extend(position);
-
     }
     map.fitBounds(bounds);
-}
-
-//your position
-
-function geoFindMe() {
-
-    function success(position) {
-
-        return currentcords = {
-            "lat": position.coords.latitude,
-            "lng": position.coords.longitude
-        }
-    }
-
-    function error() {
-        STORE.status = 'Unable to retrieve your location';
-    }
-
-
-    if (!navigator.geolocation) {
-        STORE.status = 'Geolocation is not supported by your browser';
-    } else {
-        STORE.status = 'Locating…';
-        navigator.geolocation.getCurrentPosition(success, error);
-    }
-    
 }
