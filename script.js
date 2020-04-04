@@ -105,8 +105,8 @@ function renderCords(responseJson) {
     for (let i = 0; i < responseJson.length; i++) {
 
         let stationcord = {
-            lat = parseFloat(responseJson[i].AddressInfo.Latitude),
-            lon = parseFloat(responseJson[i].AddressInfo.Longitude)
+            lat : parseFloat(responseJson[i].AddressInfo.Latitude),
+            lon : parseFloat(responseJson[i].AddressInfo.Longitude)
         };
 
         console.log(stationcord);
