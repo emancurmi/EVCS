@@ -1,16 +1,36 @@
 ﻿'use strict';
 
-
 let STORE = {
     lang : "en",
-    maps_src : 'https://maps.googleapis.com/maps/api/js?callback=initMap&signed_in=true&key=AIzaSyCqUuyEgb8KQ-sXs3nKkiSesNpGX4aROJw&language=',
-    openmaps_src: 'https://api.openchargemap.io/v3/poi/?output=json',
-    cords : [],
-    currentcords : {},
-    markercords : {},
-    limit : 50,
-    status : ""
+    status: ""
 };
+
+let GoogleMaps = {
+    src: "https://maps.googleapis.com/maps/api/js?callback=initMap&key=AIzaSyCqUuyEgb8KQ-sXs3nKkiSesNpGX4aROJw&language=",
+    stations: []
+}
+
+let CarInfo = {
+    carbrand: "",
+    carmodel: "",
+    connectiontype: "",
+    cords: {
+        lat: 0,
+        lng: 0
+    }
+}
+
+let OpenMapsAPI = {
+    src: "https://api.openchargemap.io/v3/poi/?output=json",
+    cords: {
+        lat: 0,
+        lng: 0
+    },
+    distance: "",
+    countrycode: "",
+    connectiontypeid: "",
+    limit: 10,
+}
 
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -21,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         let js_file = document.createElement('script');
         js_file.type = 'text/javascript';
-        js_file.src = STORE.maps_src + STORE.lang;
+        js_file.src = GoogleMaps.src;
         document.getElementsByTagName('head')[0].appendChild(js_file);
     }
 });
@@ -33,20 +53,22 @@ let map;
 function initMap() {
 
     //if current cords successfully loaded
-
     function success(position) {
+
+        CarInfo.cords.lat = OpenMapsAPI.cords.lat = parseFloat(position.coords.latitude);
+        CarInfo.cords.lng = OpenMapsAPI.cords.lng = parseFloat(position.coords.longitude);
+
         map = new google.maps.Map(document.getElementById('map'), {
             center: {
-                "lat": position.coords.latitude,
-                "lng": position.coords.longitude
+                "lat": CarInfo.cords.lat,
+                "lng": CarInfo.cords.lng
             },
             zoom: 8
         });
 
-        STORE.cords.push({ "lat": position.coords.latitude, "lng": position.coords.longitude });
+        GoogleMaps.stations.push()
 
-        let fullurl = STORE.openmaps_src + "&latitued=" + STORE.cords[0].lat + "&longitude=" + STORE.cords[0].lng + "&distance=10";
-        console.log(fullurl);
+        let fullurl = OpenMapsAPI.src + "&countrycode=US" + "&latitude=" + OpenMapsAPI.cords.lat + "&longitude=" + OpenMapsAPI.cords.lng + "&distance=" + OpenMapsAPI.limit;
         fetch(fullurl)
             .then(response => response.json())
             .then(responseJson => renderResults(responseJson))
@@ -57,19 +79,16 @@ function initMap() {
 
     function error() {
         STORE.status = 'Unable to retrieve your location';
-        console.log(status);
     }
 
     //current cords check
     if (!navigator.geolocation) {
         STORE.status = 'Geolocation is not supported by your browser';
-        console.log(status);
     } else {
         STORE.status = 'Locating…';
         navigator.geolocation.getCurrentPosition(success, error);
-        console.log(status);
     }
-}
+};
 
 
 function renderResults(responseJson) {
@@ -82,22 +101,20 @@ function renderResults(responseJson) {
 }
 
 function renderCords(responseJson) {
-    if (parseInt(responseJson.limit) > parseInt(responseJson.total)) {
-        resultno = parseInt(responseJson.total);
-    }
-    else {
-        resultno = parseInt(responseJson.maxresults);
-    }
-
+    let stationcord = { lat: 0, lng: 0 };
+    
     for (let i = 0; i < responseJson.length; i++) {
-         STORE.reponsecords = {
-            "lat": responseJson[i].AddressInfo.Latitude,
-            "lng": responseJson[i].AddressInfo.Longitude
-        }
-        STORE.cords.push(STORE.reponsecords);
+
+        stationcord.lat = parseFloat(responseJson[i].AddressInfo.Latitude);
+        stationcord.lon = parseFloat(responseJson[i].AddressInfo.Longitude);
+
+        console.log(station);
+
+        GoogleMaps.stations.push(stationcord);
     }
 
-    plotMarkers(STORE.cords);
+    plotMarkers(GoogleMaps.stations);
+
 }
 
 //markers section
@@ -105,14 +122,14 @@ function renderCords(responseJson) {
 let markers;
 let bounds;
 
-function plotMarkers(cords) {
+function plotMarkers(stations) {
 
     markers = [];
     bounds = new google.maps.LatLngBounds();
 
-    for (let i = 0; i < cords.length; i++) {
-
-        let position = new google.maps.LatLng(cords[i].lat, cords[i].lng);
+    for (let i = 0; i < stations.length; i++) {
+        console.log(stations[i].lat + " " + stations[i].lng);
+        let position = new google.maps.LatLng(stations[i].lat, stations[i].lng);
 
         markers.push(
             new google.maps.Marker({
@@ -123,15 +140,6 @@ function plotMarkers(cords) {
         );
 
         bounds.extend(position);
-
     }
     map.fitBounds(bounds);
-}
-
-//your position
-
-function geoFindMe() {
-
-    
-    
 }
