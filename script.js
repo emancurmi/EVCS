@@ -1,4 +1,4 @@
-﻿'use strict';
+'use strict';
 
 let STORE = {
     lang : "en",
@@ -55,8 +55,10 @@ function initMap() {
     //if current cords successfully loaded
     function success(position) {
 
-        CarInfo.cords.lat = OpenMapsAPI.cords.lat = parseFloat(position.coords.latitude);
-        CarInfo.cords.lng = OpenMapsAPI.cords.lng = parseFloat(position.coords.longitude);
+
+
+        CarInfo.cords.lat = OpenMapsAPI.cords.lat = 40.7699456//parseFloat(position.coords.latitude);
+        CarInfo.cords.lng = OpenMapsAPI.cords.lng = -73.98686719999999 //parseFloat(position.coords.longitude);
 
         map = new google.maps.Map(document.getElementById('map'), {
             center: {
@@ -66,9 +68,9 @@ function initMap() {
             zoom: 8
         });
 
-        GoogleMaps.stations.push()
+ 
 
-        let fullurl = OpenMapsAPI.src + "&countrycode=US" + "&latitude=" + OpenMapsAPI.cords.lat + "&longitude=" + OpenMapsAPI.cords.lng + "&distance=" + OpenMapsAPI.limit;
+        let fullurl = OpenMapsAPI.src  + '&latitude=40.7699456&longitude=-73.98686719999999&distance=10'
         fetch(fullurl)
             .then(response => response.json())
             .then(responseJson => renderResults(responseJson))
@@ -96,26 +98,9 @@ function renderResults(responseJson) {
         alert('No parks found. Please try again');
     }
     else {
-        renderCords(responseJson);
+        GoogleMaps.stations = responseJson
+        plotMarkers();
     }
-}
-
-function renderCords(responseJson) {
-    
-    for (let i = 0; i < responseJson.length; i++) {
-
-        let stationcord = {
-            lat : parseFloat(responseJson[i].AddressInfo.Latitude),
-            lon : parseFloat(responseJson[i].AddressInfo.Longitude)
-        };
-
-        console.log(stationcord);
-
-        GoogleMaps.stations.push(stationcord);
-    }
-
-    plotMarkers(GoogleMaps.stations);
-
 }
 
 //markers section
@@ -123,14 +108,14 @@ function renderCords(responseJson) {
 let markers;
 let bounds;
 
-function plotMarkers(stations) {
-
+function plotMarkers() {
+    console.log(GoogleMaps.stations)
     markers = [];
     bounds = new google.maps.LatLngBounds();
 
-    for (let i = 0; i < stations.length; i++) {
-        console.log(stations[i].lat + " " + stations[i].lng);
-        let position = new google.maps.LatLng(stations[i].lat, stations[i].lng);
+    for (let i = 0; i < GoogleMaps.stations.length; i++) {
+        console.log(GoogleMaps.stations[i].AddressInfo.Latitude + " " + GoogleMaps.stations[i].AddressInfo.Longitude);
+        let position = new google.maps.LatLng(GoogleMaps.stations[i].AddressInfo.Latitude, GoogleMaps.stations[i].AddressInfo.Longitude);
 
         markers.push(
             new google.maps.Marker({
