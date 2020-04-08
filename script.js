@@ -30,6 +30,7 @@ let OpenMapsAPI = {
     countrycode: "",
     connectiontypeid: "",
     limit: 10,
+    queryurl: ""
 };
 
 let CarsDB = [
@@ -139,17 +140,6 @@ let ChargingPortDB = [
 
 document.addEventListener('DOMContentLoaded', function () {
     generateform();
-
-    if (document.querySelectorAll('#map').length > 0) {
-        if (document.querySelector('html').lang)
-            STORE.lang = document.querySelector('html').lang;
-
-
-        let js_file = document.createElement('script');
-        js_file.type = 'text/javascript';
-        js_file.src = GoogleMaps.src;
-        document.getElementsByTagName('head')[0].appendChild(js_file);
-    }
 });
 
 function generateform() {
@@ -169,13 +159,13 @@ function generatebrands() {
 
 function generatemodels() {
     let jsselbrands = document.getElementById('jsselbrands');
-    let brand = jsselbrands.value;
+    CarInfo.brand = jsselbrands.value;
     let jsselmodels = document.getElementById('jsselmodels');
     jsselmodels.innerHTML = "";
 
     for (let i = 0; i < CarsDB.length; i++)
     {
-        if (CarsDB[i].brand == brand) {
+        if (CarsDB[i].brand == CarInfo.brand) {
             
             jsselmodels.innerHTML += "<option value=" + CarsDB[i].model + ">" + CarsDB[i].model + "</option>";
         }
@@ -185,12 +175,12 @@ function generatemodels() {
 
 function generateconnections() {
     let jsselmodels = document.getElementById('jsselmodels');
-    let model = jsselmodels.value;
+    CarInfo.model = jsselmodels.value;
     let jsselconnectors = document.getElementById('jsselconnectors');
     jsselconnectors.innerHTML = "";
 
     for (let i = 0; i < CarsDB.length; i++) {
-        if (CarsDB[i].model == model) {
+        if (CarsDB[i].model == CarInfo.model) {
             for (let j = 0; j < CarsDB[i].chargingport.length; j++) {
                 for (let k = 0; k < ChargingPortDB.length; k++) {
                     if (ChargingPortDB[k].connectiontypeid == CarsDB[i].chargingport[j]) {
@@ -209,52 +199,28 @@ document.getElementById("jsselmodels").onchange = generateconnections;
 document.getElementById("btnsubmit").addEventListener("click", updateMap);
 
 function updateMap() {
+    let jsselconnectors = document.getElementById('jsselconnectors');
+    CarInfo.connectiontype = jsselconnectors.value;
 
-    let fullurl = OpenMapsAPI.src + '&latitude=' + CarInfo.cords.lat + '&longitude=' + CarInfo.cords.lng + '&distance=10'
-    fetch(fullurl)
-        .then(response => response.json())
-        .then(responseJson => renderResults(responseJson))
-        .catch(error => alert(error));
+    OpenMapsAPI.queryurl = '&latitude=' + CarInfo.cords.lat + '&longitude=' + CarInfo.cords.lng + '&distance=10';
+    startlocating();
 }
 
 
-//create map
+function startlocating() {
 
-let map;
-
-function initMap() {
-
-    //if current cords successfully loaded
     function success(position) {
 
         CarInfo.cords.lat = OpenMapsAPI.cords.lat = parseFloat(position.coords.latitude);
         CarInfo.cords.lng = OpenMapsAPI.cords.lng = parseFloat(position.coords.longitude);
-
-        map = new google.maps.Map(document.getElementById('map'), {
-            center: {
-                "lat": CarInfo.cords.lat,
-                "lng": CarInfo.cords.lng
-            },
-            zoom: 8
-        });
-
-        let x = "";
-        if (x == "") {
-            
-        }
-        else {
-            let fullurl = OpenMapsAPI.src;
-            fetch(fullurl)
-                .then(response => response.json())
-                .then(responseJson => renderResults(responseJson))
-                .catch(error => alert(error));
-        }
+        renderResults()
     }
 
     //if current cords fail to load
 
     function error() {
         STORE.status = 'Unable to retrieve your location';
+        alert(STORE.status);
     }
 
     //current cords check
@@ -266,38 +232,85 @@ function initMap() {
     }
 };
 
+var map;
+var markers = [];
 
-function renderResults(responseJson) {
-    if (responseJson.code === 404) {
-        alert('No parks found. Please try again');
+function renderResults() {
+
+    do {
+        fetch(OpenMapsAPI.src + OpenMapsAPI.queryurl)
+            .then(response => response.json())
+            .then(responseJson => generatemarkers(responseJson))
+            .catch(error => alert(error));
+
+        function generatemarkers(responseJson) {
+
+            if (responseJson.code === 404) {
+                alert('No parks found. Please try again');
+            }
+            else {
+
+                GoogleMaps.markers = responseJson
+                for (let i = 0; i < GoogleMaps.markers.length; i++) {
+                    var location = { lat: GoogleMaps.markers[i].AddressInfo.Latitude, lng: GoogleMaps.markers[i].AddressInfo.Longitude };
+                    addMarker(location);
+                }
+            }
+        }
     }
-    else {
-        GoogleMaps.stations = responseJson
-        plotMarkers();
+    while (GoogleMaps.markers.length == 0);
+
+    initMap();
+}
+
+
+
+function initMap() {
+    var haightAshbury = { lat: CarInfo.cords.lat, lng: CarInfo.cords.lng };
+
+    map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 12,
+        center: haightAshbury,
+        mapTypeId: 'terrain'
+    });
+
+    // This event listener will call addMarker() when the map is clicked.
+    map.addListener('click', function (event) {
+        addMarker(event.latLng);
+    });
+
+    // Adds a marker at the center of the map.
+    addMarker(haightAshbury);
+}
+
+// Adds a marker to the map and push to the array.
+function addMarker(location) {
+    var marker = new google.maps.Marker({
+        position: location,
+        map: map
+    });
+    markers.push(marker);
+}
+
+// Sets the map on all markers in the array.
+function setMapOnAll(map) {
+    for (var i = 0; i < markers.length; i++) {
+        markers[i].setMap(map);
     }
 }
 
-//markers section
+// Removes the markers from the map, but keeps them in the array.
+function clearMarkers() {
+    setMapOnAll(null);
+}
 
-let markers;
-let bounds;
+// Shows any markers currently in the array.
+function showMarkers() {
+    setMapOnAll(map);
+}
 
-function plotMarkers() {
+// Deletes all markers in the array by removing references to them.
+function deleteMarkers() {
+    clearMarkers();
     markers = [];
-    bounds = new google.maps.LatLngBounds();
-
-    for (let i = 0; i < GoogleMaps.stations.length; i++) {
-        let position = new google.maps.LatLng(GoogleMaps.stations[i].AddressInfo.Latitude, GoogleMaps.stations[i].AddressInfo.Longitude);
-
-        markers.push(
-            new google.maps.Marker({
-                position: position,
-                map: map,
-                animation: google.maps.Animation.DROP
-            })
-        );
-
-        bounds.extend(position);
-    }
-    map.fitBounds(bounds);
 }

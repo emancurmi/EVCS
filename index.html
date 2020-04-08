@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+    <!-- callback=initMap& -->
+    <!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCqUuyEgb8KQ-sXs3nKkiSesNpGX4aROJw&language="></script>-->
     <header>
         <h1>Electronic Vehicle Charging Station</h1>
     </header>
@@ -37,7 +39,7 @@
                 <select id="jsselmodels"></select>
                 <label for="jsselconnectors">Available Connector</label>
                 <select id="jsselconnectors"></select>
-                <input type="submit" value="Submit" id="btnsubmit">
+                <input id="btnsubmit" type=button value="Show All Available Connectors">
             </form>
         </section>
     </content>
@@ -47,5 +49,6 @@
     </footer>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="script.js" defer></script>
-</body>
-</html>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCqUuyEgb8KQ-sXs3nKkiSesNpGX4aROJw&language=&callback=initMap"></script>
+</body >
+</html >
