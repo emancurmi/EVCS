@@ -213,7 +213,11 @@ function startlocating() {
 
         CarInfo.cords.lat = OpenMapsAPI.cords.lat = parseFloat(position.coords.latitude);
         CarInfo.cords.lng = OpenMapsAPI.cords.lng = parseFloat(position.coords.longitude);
-        renderResults()
+
+        fetch(OpenMapsAPI.src + OpenMapsAPI.queryurl)
+            .then(response => response.json())
+            .then(responseJson => renderResults(responseJson))
+            .catch(error => alert(error));
     }
 
     //if current cords fail to load
@@ -235,31 +239,13 @@ function startlocating() {
 var map;
 var markers = [];
 
-function renderResults() {
-
-    do {
-        fetch(OpenMapsAPI.src + OpenMapsAPI.queryurl)
-            .then(response => response.json())
-            .then(responseJson => generatemarkers(responseJson))
-            .catch(error => alert(error));
-
-        function generatemarkers(responseJson) {
-
-            if (responseJson.code === 404) {
-                alert('No parks found. Please try again');
-            }
-            else {
-
-                GoogleMaps.markers = responseJson
-                for (let i = 0; i < GoogleMaps.markers.length; i++) {
-                    var location = { lat: GoogleMaps.markers[i].AddressInfo.Latitude, lng: GoogleMaps.markers[i].AddressInfo.Longitude };
-                    addMarker(location);
-                }
-            }
-        }
+function renderResults(responseJson) {
+    if (responseJson.code === 404) {
+        alert('No parks found. Please try again');
     }
-    while (GoogleMaps.markers.length == 0);
-
+    else {
+        GoogleMaps.markers = responseJson
+    }
     initMap();
 }
 
@@ -275,15 +261,23 @@ function initMap() {
     });
 
     // This event listener will call addMarker() when the map is clicked.
-    map.addListener('click', function (event) {
-        addMarker(event.latLng);
-    });
+
+    //map.addListener('click', function (event) {
+    //    addMarker(event.latLng);
+    //});
 
     // Adds a marker at the center of the map.
+
     addMarker(haightAshbury);
+    for (let i = 0; i < GoogleMaps.markers.length; i++) {
+        console.log(GoogleMaps.markers.length);
+        var location = { lat: GoogleMaps.markers[i].AddressInfo.Latitude, lng: GoogleMaps.markers[i].AddressInfo.Longitude };
+        addMarker(location);
+    }
 }
 
 // Adds a marker to the map and push to the array.
+
 function addMarker(location) {
     var marker = new google.maps.Marker({
         position: location,
