@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -8,8 +8,44 @@
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div id="map"></div>
-
+    <header>
+        <h1>Electronic Vehicle Charging Station</h1>
+    </header>
+    <content>
+        <section id="about">
+            <p>ECVS is a map of the world created to help users find a charging station for their Electric Vehicle.</p>
+        </section>
+        <section id="howtouse">
+            <p>
+                Quick steps to start
+                <ul>
+                    <li>Select your Car Brand</li>
+                    <li>Select your Model</li>
+                    <li>Select your charging method</li>
+                    <li>Allow our app to get your location</li>
+                    <li>Browse the markers for additional details about the chargin spot</li>
+                </ul>
+            </p>
+        </section>
+    </content>
+    <content>
+        <section id="form">
+            <form>
+                <label for="jsselbrands">Car Brand</label>
+                <select id="jsselbrands"></select>
+                <label for="jsselmodels">Car Model</label>
+                <select id="jsselmodels"></select>
+                <label for="jsselconnectors">Available Connector</label>
+                <select id="jsselconnectors"></select>
+                <input type="submit" value="Submit" id="btnsubmit">
+            </form>
+        </section>
+    </content>
+    <section id="map"></section>
+    <footer>
+        <a href="#">Copyright Eman Curmi</a>
+    </footer>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="script.js" defer></script>
 </body>
 </html>

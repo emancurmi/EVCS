@@ -1,14 +1,14 @@
 ﻿'use strict';
 
 let STORE = {
-    lang : "en",
+    lang: "en",
     status: ""
 };
 
 let GoogleMaps = {
     src: "https://maps.googleapis.com/maps/api/js?callback=initMap&key=AIzaSyCqUuyEgb8KQ-sXs3nKkiSesNpGX4aROJw&language=",
-    stations: []
-}
+    markers: []
+};
 
 let CarInfo = {
     carbrand: "",
@@ -18,7 +18,7 @@ let CarInfo = {
         lat: 0,
         lng: 0
     }
-}
+};
 
 let OpenMapsAPI = {
     src: "https://api.openchargemap.io/v3/poi/?output=json",
@@ -30,9 +30,115 @@ let OpenMapsAPI = {
     countrycode: "",
     connectiontypeid: "",
     limit: 10,
-}
+};
+
+let CarsDB = [
+    {
+        brand: "Fiat",
+        model: "500e",
+        chargingport:[22, 9]
+    },
+    {
+        brand: "Honda",
+        model: "Clarity",
+        chargingport: [22]
+    },
+    {
+        brand: "Nissan",
+        model: "Leaf",
+        chargingport: [9]
+    },
+    {
+        brand: "Tesla",
+        model: "Model-X",
+        chargingport: [30, 27]
+    },
+    {
+        brand: "BMW",
+        model: "i3",
+        chargingport: [9]
+    },
+    {
+        brand: "Kia",
+        model: "Niro",
+        chargingport: [1,2]
+    },
+    {
+        brand: "Volkswagen",
+        model: "e-Golf",
+        chargingport: [2]
+    },
+    {
+        brand: "Hyundai",
+        model: "ioniq",
+        chargingport: [1]
+    },
+    {
+        brand: "Chevrolet",
+        model: "Bolt",
+        chargingport: [22,9]
+    },
+    {
+        brand: "Hyundai",
+        model: "Kona",
+        chargingport: [22,9]
+    },
+    {
+        brand: "Audi",
+        model: "e-tron",
+        chargingport: [9]
+    },
+    {
+        brand: "Jaguar",
+        model: "I-Pace",
+        chargingport: [9]
+    },
+    {
+        brand: "Tesla",
+        model: "Model-3",
+        chargingport: [30, 27]
+    },
+    {
+        brand: "Kia",
+        model: "Soul",
+        chargingport: [9]
+    },
+    {
+        brand: "Tesla",
+        model: "Model-S",
+        chargingport: [30, 27]
+    }
+];
+
+let ChargingPortDB = [
+    {
+        connectiontypeid: "22",
+        connectionname : "NEMA 5-15R"
+    },
+    {
+        connectiontypeid : "1",
+        connectionname : "SAE J1772-2009"
+    },
+    {
+        connectiontypeid : "30",
+        connectionname : "Tesla Charging Station"
+    },
+    {
+        connectiontypeid : "9",
+        connectionname : "NEMA 5-20R"
+    },
+    {
+        connectiontypeid : "27",
+        connectionname : "Tesla Supercharger"
+    },
+    {
+        connectiontypeid : "2",
+        connectionname : "CHAdeMO"
+    }
+];
 
 document.addEventListener('DOMContentLoaded', function () {
+    generateform();
 
     if (document.querySelectorAll('#map').length > 0) {
         if (document.querySelector('html').lang)
@@ -45,6 +151,72 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementsByTagName('head')[0].appendChild(js_file);
     }
 });
+
+function generateform() {
+    generatebrands();
+};
+
+function generatebrands() {
+    let jsselbrands = document.getElementById('jsselbrands');
+    jsselbrands.innerHTML = "";
+
+    for (let i = 0; i < CarsDB.length; i++)
+    {
+        jsselbrands.innerHTML += "<option value=" + CarsDB[i].brand + ">" + CarsDB[i].brand + "</option>"
+    }
+    generatemodels()
+};
+
+function generatemodels() {
+    let jsselbrands = document.getElementById('jsselbrands');
+    let brand = jsselbrands.value;
+    let jsselmodels = document.getElementById('jsselmodels');
+    jsselmodels.innerHTML = "";
+
+    for (let i = 0; i < CarsDB.length; i++)
+    {
+        if (CarsDB[i].brand == brand) {
+            
+            jsselmodels.innerHTML += "<option value=" + CarsDB[i].model + ">" + CarsDB[i].model + "</option>";
+        }
+    }
+    generateconnections();
+}
+
+function generateconnections() {
+    let jsselmodels = document.getElementById('jsselmodels');
+    let model = jsselmodels.value;
+    let jsselconnectors = document.getElementById('jsselconnectors');
+    jsselconnectors.innerHTML = "";
+
+    for (let i = 0; i < CarsDB.length; i++) {
+        if (CarsDB[i].model == model) {
+            for (let j = 0; j < CarsDB[i].chargingport.length; j++) {
+                for (let k = 0; k < ChargingPortDB.length; k++) {
+                    if (ChargingPortDB[k].connectiontypeid == CarsDB[i].chargingport[j]) {
+                        jsselconnectors.innerHTML += "<option value=" + CarsDB[i].chargingport[j] + ">" + ChargingPortDB[k].connectionname + "</option>";
+                    }
+                }
+            }
+        }
+    }
+};
+
+document.getElementById("jsselbrands").onchange = generatemodels;
+
+document.getElementById("jsselmodels").onchange = generateconnections;
+
+document.getElementById("btnsubmit").addEventListener("click", updateMap);
+
+function updateMap() {
+
+    let fullurl = OpenMapsAPI.src + '&latitude=' + CarInfo.cords.lat + '&longitude=' + CarInfo.cords.lng + '&distance=10'
+    fetch(fullurl)
+        .then(response => response.json())
+        .then(responseJson => renderResults(responseJson))
+        .catch(error => alert(error));
+}
+
 
 //create map
 
@@ -66,13 +238,17 @@ function initMap() {
             zoom: 8
         });
 
-        GoogleMaps.stations.push()
-
-        let fullurl = OpenMapsAPI.src + "&countrycode=US" + "&latitude=" + OpenMapsAPI.cords.lat + "&longitude=" + OpenMapsAPI.cords.lng + "&distance=" + OpenMapsAPI.limit;
-        fetch(fullurl)
-            .then(response => response.json())
-            .then(responseJson => renderResults(responseJson))
-            .catch(error => alert(error));
+        let x = "";
+        if (x == "") {
+            
+        }
+        else {
+            let fullurl = OpenMapsAPI.src;
+            fetch(fullurl)
+                .then(response => response.json())
+                .then(responseJson => renderResults(responseJson))
+                .catch(error => alert(error));
+        }
     }
 
     //if current cords fail to load
@@ -96,26 +272,9 @@ function renderResults(responseJson) {
         alert('No parks found. Please try again');
     }
     else {
-        renderCords(responseJson);
+        GoogleMaps.stations = responseJson
+        plotMarkers();
     }
-}
-
-function renderCords(responseJson) {
-    
-    for (let i = 0; i < responseJson.length; i++) {
-
-        let stationcord = {
-            lat : parseFloat(responseJson[i].AddressInfo.Latitude),
-            lon : parseFloat(responseJson[i].AddressInfo.Longitude)
-        };
-
-        console.log(stationcord);
-
-        GoogleMaps.stations.push(stationcord);
-    }
-
-    plotMarkers(GoogleMaps.stations);
-
 }
 
 //markers section
@@ -123,14 +282,12 @@ function renderCords(responseJson) {
 let markers;
 let bounds;
 
-function plotMarkers(stations) {
-
+function plotMarkers() {
     markers = [];
     bounds = new google.maps.LatLngBounds();
 
-    for (let i = 0; i < stations.length; i++) {
-        console.log(stations[i].lat + " " + stations[i].lng);
-        let position = new google.maps.LatLng(stations[i].lat, stations[i].lng);
+    for (let i = 0; i < GoogleMaps.stations.length; i++) {
+        let position = new google.maps.LatLng(GoogleMaps.stations[i].AddressInfo.Latitude, GoogleMaps.stations[i].AddressInfo.Longitude);
 
         markers.push(
             new google.maps.Marker({
