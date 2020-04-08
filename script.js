@@ -140,8 +140,7 @@ let ChargingPortDB = [
 
 document.addEventListener('DOMContentLoaded', function () {
     generateform();
-    initMap();
-    $("#map").hide();
+    startlocating();
 });
 
 function generateform() {
@@ -201,7 +200,6 @@ document.getElementById("jsselmodels").onchange = generateconnections;
 document.getElementById("btnsubmit").addEventListener("click", updateMap);
 
 function updateMap() {
-    $("#map").show(1000);
     let jsselconnectors = document.getElementById('jsselconnectors');
     CarInfo.connectiontype = jsselconnectors.value;
 
@@ -257,7 +255,7 @@ function initMap() {
     var marker = { lat: CarInfo.cords.lat, lng: CarInfo.cords.lng };
 
     map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 14,
+        zoom: 12,
         center: marker,
         mapTypeId: 'terrain'
     });
@@ -271,12 +269,12 @@ function initMap() {
     // Adds a marker at the center of the map.
 
     //addMarker(haightAshbury);
-
     for (let i = 0; i < GoogleMaps.markers.length; i++) {
         console.log(GoogleMaps.markers.length);
         marker = { lat: GoogleMaps.markers[i].AddressInfo.Latitude, lng: GoogleMaps.markers[i].AddressInfo.Longitude };
         addMarker(marker);
     }
+    setMapOnAll()
 }
 
 // Adds a marker to the map and push to the array.
@@ -286,7 +284,7 @@ function addMarker(location) {
         position: location,
         map: map
     });
-    markers.push(marker);
+    showMarkers();
 }
 
 // Sets the map on all markers in the array.
