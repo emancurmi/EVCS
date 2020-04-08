@@ -1,4 +1,6 @@
-﻿'use strict';
+﻿/*file:///Users/emancurmi/Documents/Thinkful/EVCS/index.html*/
+
+'use strict';
 
 let STORE = {
     lang: "en",
@@ -140,7 +142,6 @@ let ChargingPortDB = [
 
 document.addEventListener('DOMContentLoaded', function () {
     generateform();
-    startlocating();
 });
 
 function generateform() {
@@ -203,9 +204,12 @@ function updateMap() {
     let jsselconnectors = document.getElementById('jsselconnectors');
     CarInfo.connectiontype = jsselconnectors.value;
 
-    OpenMapsAPI.queryurl = '&latitude=' + CarInfo.cords.lat + '&longitude=' + CarInfo.cords.lng + '&distance=10';
+    OpenMapsAPI.queryurl = '&latitude=' + CarInfo.cords.lat + '&longitude=' + CarInfo.cords.lng + '&connectiontypeid=' + CarInfo.connectiontype + '&distance=10';
+
     startlocating();
-}
+
+    
+};
 
 
 function startlocating() {
@@ -214,11 +218,7 @@ function startlocating() {
 
         CarInfo.cords.lat = OpenMapsAPI.cords.lat = parseFloat(position.coords.latitude);
         CarInfo.cords.lng = OpenMapsAPI.cords.lng = parseFloat(position.coords.longitude);
-
-        fetch(OpenMapsAPI.src + OpenMapsAPI.queryurl)
-            .then(response => response.json())
-            .then(responseJson => renderResults(responseJson))
-            .catch(error => alert(error));
+        initMap();
     }
 
     //if current cords fail to load
@@ -238,74 +238,102 @@ function startlocating() {
 };
 
 
-function renderResults(responseJson) {
+let map;
+let markers = [];
+let InforObj = [];
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function getcharginstationsinfo() {
+    console.log(OpenMapsAPI.src + OpenMapsAPI.queryurl);
+    fetch(OpenMapsAPI.src + OpenMapsAPI.queryurl)
+        .then(response => response.json())
+        .then(responseJson =>  renderResults(responseJson))
+        .catch(error => alert(error));
+};
+
+async function renderResults(responseJson) {
+
     if (responseJson.code === 404) {
-        alert('No charging stations found. Please try again');
+        if (responseJson.code === 404) {
+            alert('No charging stations found. Please try again');
+            console.log("code 404");
+        }
+        else {
+            await sleep(300);
+
+        }
     }
     else {
+        
         GoogleMaps.markers = responseJson;
+
+        console.log(GoogleMaps.markers.length);
+        
+        for (var i = 0; i < GoogleMaps.markers.length; i++) {
+     
+            var contentString = '<div id="content">';
+            contentString += '<h1>' + GoogleMaps.markers[i].OperatorInfo.Title + '</h1>';
+            contentString += '<p>Contact Number: ' + GoogleMaps.markers[i].OperatorInfo.PhonePrimaryContact + '<br/>';
+
+            if (GoogleMaps.markers[i].UsageType.IsMembershipRequired == true) {
+                contentString += 'Requires Membership: ' + GoogleMaps.markers[i].UsageType.IsMembershipRequired + '<br/>';
+            }
+
+            if (GoogleMaps.markers[i].UsageType.IsPayAtLocation == true) {
+                contentString += 'Requires Membership: ' + GoogleMaps.markers[i].UsageType.IsPayAtLocation + '<br/>';
+            }
+
+            if (GoogleMaps.markers[i].UsageType.IsPayAtLocation == true) {
+                contentString +='Requires Membership: ' + GoogleMaps.markers[i].UsageType.IsPayAtLocation + '<br/>';
+            }
+
+            contentString += 'Comments: ' + GoogleMaps.markers[i].Connections.Level.Comments + '<br/>';
+
+            contentString += 'Distance: ' + (GoogleMaps.markers[i].AddressInfo.distance).toFixed(2) + ' Miles <br/>';
+
+            contentString += '</p><p></p></div >';
+            
+
+            const marker = new google.maps.Marker({
+                position: { lat: GoogleMaps.markers[i].AddressInfo.Latitude, lng: GoogleMaps.markers[i].AddressInfo.Longitude },
+                map: map
+            });
+
+            const infowindow = new google.maps.InfoWindow({
+                content: contentString,
+                maxWidth: 200
+            });
+
+            marker.addListener('click', function () {
+                closeOtherInfo();
+                infowindow.open(marker.get('map'), marker);
+                InforObj[0] = infowindow;
+            });
+        }
     }
-    initMap();
+};
+
+function closeOtherInfo() {
+    if (InforObj.length > 0) {
+        /* detach the info-window from the marker ... undocumented in the API docs */
+        InforObj[0].set("marker", null);
+        /* and close it */
+        InforObj[0].close();
+        /* blank the array */
+        InforObj.length = 0;
+    }
 }
 
-var map;
-var markers = [];
 
 function initMap() {
-    var marker = { lat: CarInfo.cords.lat, lng: CarInfo.cords.lng };
-
+    let marker = { lat: CarInfo.cords.lat, lng: CarInfo.cords.lng };
+    console.log(marker);
     map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 12,
-        center: marker,
-        mapTypeId: 'terrain'
+        zoom: 13,
+        center: marker
     });
-
-    // This event listener will call addMarker() when the map is clicked.
-
-    //map.addListener('click', function (event) {
-    //    addMarker(event.latLng);
-    //});
-
-    // Adds a marker at the center of the map.
-
-    //addMarker(haightAshbury);
-    for (let i = 0; i < GoogleMaps.markers.length; i++) {
-        console.log(GoogleMaps.markers.length);
-        marker = { lat: GoogleMaps.markers[i].AddressInfo.Latitude, lng: GoogleMaps.markers[i].AddressInfo.Longitude };
-        addMarker(marker);
-    }
-    setMapOnAll()
-}
-
-// Adds a marker to the map and push to the array.
-
-function addMarker(location) {
-    var marker = new google.maps.Marker({
-        position: location,
-        map: map
-    });
-    showMarkers();
-}
-
-// Sets the map on all markers in the array.
-function setMapOnAll(map) {
-    for (var i = 0; i < markers.length; i++) {
-        markers[i].setMap(map);
-    }
-}
-
-// Removes the markers from the map, but keeps them in the array.
-function clearMarkers() {
-    setMapOnAll(null);
-}
-
-// Shows any markers currently in the array.
-function showMarkers() {
-    setMapOnAll(map);
-}
-
-// Deletes all markers in the array by removing references to them.
-function deleteMarkers() {
-    clearMarkers();
-    markers = [];
-}
+    getcharginstationsinfo();
+};
