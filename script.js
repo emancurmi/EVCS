@@ -140,6 +140,8 @@ let ChargingPortDB = [
 
 document.addEventListener('DOMContentLoaded', function () {
     generateform();
+    initMap();
+    $("#map").hide();
 });
 
 function generateform() {
@@ -199,6 +201,7 @@ document.getElementById("jsselmodels").onchange = generateconnections;
 document.getElementById("btnsubmit").addEventListener("click", updateMap);
 
 function updateMap() {
+    $("#map").show(1000);
     let jsselconnectors = document.getElementById('jsselconnectors');
     CarInfo.connectiontype = jsselconnectors.value;
 
@@ -236,27 +239,26 @@ function startlocating() {
     }
 };
 
-var map;
-var markers = [];
 
 function renderResults(responseJson) {
     if (responseJson.code === 404) {
-        alert('No parks found. Please try again');
+        alert('No charging stations found. Please try again');
     }
     else {
-        GoogleMaps.markers = responseJson
+        GoogleMaps.markers = responseJson;
     }
     initMap();
 }
 
-
+var map;
+var markers = [];
 
 function initMap() {
-    var haightAshbury = { lat: CarInfo.cords.lat, lng: CarInfo.cords.lng };
+    var marker = { lat: CarInfo.cords.lat, lng: CarInfo.cords.lng };
 
     map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 12,
-        center: haightAshbury,
+        zoom: 14,
+        center: marker,
         mapTypeId: 'terrain'
     });
 
@@ -268,11 +270,12 @@ function initMap() {
 
     // Adds a marker at the center of the map.
 
-    addMarker(haightAshbury);
+    //addMarker(haightAshbury);
+
     for (let i = 0; i < GoogleMaps.markers.length; i++) {
         console.log(GoogleMaps.markers.length);
-        var location = { lat: GoogleMaps.markers[i].AddressInfo.Latitude, lng: GoogleMaps.markers[i].AddressInfo.Longitude };
-        addMarker(location);
+        marker = { lat: GoogleMaps.markers[i].AddressInfo.Latitude, lng: GoogleMaps.markers[i].AddressInfo.Longitude };
+        addMarker(marker);
     }
 }
 
