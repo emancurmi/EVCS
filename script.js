@@ -273,29 +273,73 @@ async function renderResults(responseJson) {
         console.log(GoogleMaps.markers.length);
         
         for (var i = 0; i < GoogleMaps.markers.length; i++) {
-     
-            var contentString = '<div id="content">';
-            contentString += '<h1>' + GoogleMaps.markers[i].OperatorInfo.Title + '</h1>';
-            contentString += '<p>Contact Number: ' + GoogleMaps.markers[i].OperatorInfo.PhonePrimaryContact + '<br/>';
 
-            if (GoogleMaps.markers[i].UsageType.IsMembershipRequired == true) {
-                contentString += 'Requires Membership: ' + GoogleMaps.markers[i].UsageType.IsMembershipRequired + '<br/>';
+            let contentString = '<div id="content">';
+            try {
+                contentString += '<h3>' + GoogleMaps.markers[i].OperatorInfo.Title + '</h3>';
+            }
+            catch (error) {
+                console.log(error);
             }
 
-            if (GoogleMaps.markers[i].UsageType.IsPayAtLocation == true) {
-                contentString += 'Requires Membership: ' + GoogleMaps.markers[i].UsageType.IsPayAtLocation + '<br/>';
+            contentString += '<p>';
+
+            try {
+                contentString += 'Contact Number: ' + GoogleMaps.markers[i].OperatorInfo.PhonePrimaryContact + '<br/>';
+            }
+            catch (error) {
+                console.log(error);
             }
 
-            if (GoogleMaps.markers[i].UsageType.IsPayAtLocation == true) {
-                contentString +='Requires Membership: ' + GoogleMaps.markers[i].UsageType.IsPayAtLocation + '<br/>';
+            try {
+                (GoogleMaps.markers[i].UsageType.IsMembershipRequired != null) ? contentString += 'Requires Membership <br/>' : console.log("membership is null");
+            }
+            catch (error) {
+                console.log(error);
             }
 
-            contentString += 'Comments: ' + GoogleMaps.markers[i].Connections.Level.Comments + '<br/>';
+            try {
+                (GoogleMaps.markers[i].UsageType.IsPayAtLocation != null) ? contentString += 'Pay at location <br/>' : console.log("Pay at location is null");
+            }
+            catch (error) {
+                console.log(error);
+            }
 
-            contentString += 'Distance: ' + (GoogleMaps.markers[i].AddressInfo.distance).toFixed(2) + ' Miles <br/>';
+            try {
+                (GoogleMaps.markers[i].Connections.Level.Comments != null) ? contentString += 'Comments: ' + GoogleMaps.markers[i].Connections.Level.Comments + '<br/>' : console.log("Pay at location is null");
+            }
+            catch (error) {
+                console.log(error);
+            }
 
-            contentString += '</p><p></p></div >';
-            
+            try {
+                contentString += 'Distance: ' + GoogleMaps.markers[i].AddressInfo.distance + ' Miles <br/>';
+            }
+            catch (error) {
+                console.log(error);
+            }
+
+            contentString += '</p>';
+            contentString += '<p>';
+
+            try {
+                for (let i = 0; i < GoogleMaps.markers[i].Connections.NumberOfPoints; i++) {
+                    contentString += '<i class="fas fa-gas-pump"></i>';
+                }
+            }
+            catch (error) {
+                console.log(error);
+            }
+            contentString += '</br>';
+            try {
+                (GoogleMaps.markers[i].Connections.Level.IsFastChargeCapable == true) ? contentString += '<i class="fas fa-bolt"></i>' : console.log("Fast Charging is disabled");
+            }
+            catch (error) {
+                console.log(error);
+            }
+            contentString += '</p>';
+            contentString += '</div>';
+
 
             const marker = new google.maps.Marker({
                 position: { lat: GoogleMaps.markers[i].AddressInfo.Latitude, lng: GoogleMaps.markers[i].AddressInfo.Longitude },
