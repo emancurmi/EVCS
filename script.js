@@ -1,6 +1,4 @@
-﻿/*file:///Users/emancurmi/Documents/Thinkful/EVCS/index.html*/
-
-'use strict';
+﻿'use strict';
 
 let STORE = {
     lang: "en",
@@ -265,7 +263,6 @@ let InforObj = [];
 
 
 function getcharginstationsinfo() {
-    console.log(OpenMapsAPI.src + OpenMapsAPI.queryurl);
     fetch(OpenMapsAPI.src + OpenMapsAPI.queryurl)
         .then(response => response.json())
         .then(responseJson =>  renderResults(responseJson))
@@ -275,20 +272,12 @@ function getcharginstationsinfo() {
 async function renderResults(responseJson) {
 
     if (responseJson.code === 404) {
-        if (responseJson.code === 404) {
-            alert('No charging stations found. Please try again');
-            console.log("code 404");
-        }
-        else {
-            await sleep(300);
 
-        }
+        alert('No charging stations found. Please try again');
     }
     else {
         
         GoogleMaps.markers = responseJson;
-
-        console.log(GoogleMaps.markers.length);
         
         for (var i = 0; i < GoogleMaps.markers.length; i++) {
 
@@ -363,7 +352,6 @@ function closeOtherInfo() {
 
 function initMap() {
     let marker = { lat: CarInfo.cords.lat, lng: CarInfo.cords.lng };
-    console.log(marker);
     map = new google.maps.Map(document.getElementById('map'), {
         zoom: 13,
         center: marker
