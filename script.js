@@ -267,6 +267,14 @@ async function renderResults(responseJson) {
         for (var i = 0; i < GoogleMaps.markers.length; i++) {
 
             let contentString = '<div id="content">';
+            
+            if (GoogleMaps.markers[i].OperatorInfo && GoogleMaps.markers[i].OperatorInfo.Title){
+               contentString += '<h3>' + GoogleMaps.markers[i].OperatorInfo.Title + '</h3>';
+            }
+            if (GoogleMaps.markers[i].OperatorInfo && GoogleMaps.markers[i].OperatorInfo.PhonePrimaryContact){
+               contentString += 'Contact Number: ' + GoogleMaps.markers[i].OperatorInfo.PhonePrimaryContact + '<br/>';
+            }
+             /*
             try {
                 contentString += '<h3>' + GoogleMaps.markers[i].OperatorInfo.Title + '</h3>';
             }
@@ -281,7 +289,8 @@ async function renderResults(responseJson) {
             }
             catch (error) {
                 console.log(error);
-            }
+            }*/
+            
 
             try {
                 (GoogleMaps.markers[i].UsageType.IsMembershipRequired != null) ? contentString += 'Requires Membership <br/>' : console.log("membership is null");
