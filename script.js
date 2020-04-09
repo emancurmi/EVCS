@@ -152,9 +152,16 @@ function generatebrands() {
     let jsselbrands = document.getElementById('jsselbrands');
     jsselbrands.innerHTML = "";
 
-    for (let i = 0; i < CarsDB.length; i++)
-    {
-        jsselbrands.innerHTML += "<option value=" + CarsDB[i].brand + ">" + CarsDB[i].brand + "</option>"
+    let tempbrandarray = [];
+    for (let x = 0; x < CarsDB.length; x++) {
+
+        if (tempbrandarray.indexOf(CarsDB[x].brand) == -1) {
+            tempbrandarray.push(CarsDB[x].brand);
+        }
+    }
+
+    for (let i = 0; i < tempbrandarray.length; i++) {
+        jsselbrands.innerHTML += "<option value=" + tempbrandarray[i] + ">" + tempbrandarray[i] + "</option>"
     }
     generatemodels()
 };
@@ -204,6 +211,25 @@ function updateMap() {
     let jsselconnectors = document.getElementById('jsselconnectors');
     CarInfo.connectiontype = jsselconnectors.value;
     startlocating();
+};
+
+document.getElementById("btndemosubmit").addEventListener("click", updateDemoMap);
+
+function updateMap() {
+    let jsselconnectors = document.getElementById('jsselconnectors');
+    CarInfo.connectiontype = jsselconnectors.value;
+    startlocating();
+};
+
+function updateDemoMap() {
+    let jsselconnectors = document.getElementById('jsselconnectors');
+    CarInfo.connectiontype = jsselconnectors.value;
+
+    CarInfo.cords.lat = OpenMapsAPI.cords.lat = parseFloat(40.7859464);
+    CarInfo.cords.lng = OpenMapsAPI.cords.lng = parseFloat(-73.97418739999999);
+
+    OpenMapsAPI.queryurl = '&latitude=' + CarInfo.cords.lat + '&longitude=' + CarInfo.cords.lng + '&connectiontypeid=' + CarInfo.connectiontype + '&distance=10';
+    initMap();
 };
 
 
@@ -266,7 +292,7 @@ async function renderResults(responseJson) {
         
         for (var i = 0; i < GoogleMaps.markers.length; i++) {
 
-            let contentString = '<div id="content">';
+            let contentString = '<div id="mapcontent">';
             
             if (GoogleMaps.markers[i].OperatorInfo && GoogleMaps.markers[i].OperatorInfo.Title){
                contentString += '<h3>' + GoogleMaps.markers[i].OperatorInfo.Title + '</h3>';
@@ -274,70 +300,32 @@ async function renderResults(responseJson) {
             if (GoogleMaps.markers[i].OperatorInfo && GoogleMaps.markers[i].OperatorInfo.PhonePrimaryContact){
                contentString += 'Contact Number: ' + GoogleMaps.markers[i].OperatorInfo.PhonePrimaryContact + '<br/>';
             }
-             /*
-            try {
-                contentString += '<h3>' + GoogleMaps.markers[i].OperatorInfo.Title + '</h3>';
+
+            if (GoogleMaps.markers[i].UsageType && GoogleMaps.markers[i].UsageType.IsMembershipRequired) {
+                contentString += 'Requires Membership <br/>';
             }
-            catch (error) {
-                console.log(error);
+            if (GoogleMaps.markers[i].UsageType && GoogleMaps.markers[i].UsageType.IsPayAtLocation) {
+                contentString += 'Pay at location <br/>';
+            }
+            if (GoogleMaps.markers[i].Connections) {
+                contentString += GoogleMaps.markers[i].Connections[0].Level.Comments;
             }
 
-            contentString += '<p>';
-
-            try {
-                contentString += 'Contact Number: ' + GoogleMaps.markers[i].OperatorInfo.PhonePrimaryContact + '<br/>';
-            }
-            catch (error) {
-                console.log(error);
-            }*/
-            
-
-            try {
-                (GoogleMaps.markers[i].UsageType.IsMembershipRequired != null) ? contentString += 'Requires Membership <br/>' : console.log("membership is null");
-            }
-            catch (error) {
-                console.log(error);
-            }
-
-            try {
-                (GoogleMaps.markers[i].UsageType.IsPayAtLocation != null) ? contentString += 'Pay at location <br/>' : console.log("Pay at location is null");
-            }
-            catch (error) {
-                console.log(error);
-            }
-
-            //try {
-            //    (GoogleMaps.markers[i].Connections[0].Level.Comments != null) ? contentString += 'Comments: ' + GoogleMaps.markers[i].Connections[0].Level.Comments + '<br/>' : console.log("Pay at location is null");
-            //}
-            //catch (error) {
-            //    console.log(error);
-            //}
-
-            try {
+            if (GoogleMaps.markers[i].AddressInfo && GoogleMaps.markers[i].AddressInfo.distance) {
                 contentString += 'Distance: ' + GoogleMaps.markers[i].AddressInfo.distance + ' Miles <br/>';
             }
-            catch (error) {
-                console.log(error);
-            }
+           
 
             contentString += '</p>';
             contentString += '<p>';
 
-            //try {
-            //    for (let i = 0; i < GoogleMaps.markers[i].Connections[0].NumberOfPoints; i++) {
-            //        contentString += '<i class="fas fa-gas-pump"></i>';
-            //    }
-            //}
-            //catch (error) {
-            //    console.log(error);
-            //}
-            //contentString += '</br>';
-            //try {
-            //    (GoogleMaps.markers[i].Connections[0].Level.IsFastChargeCapable == true) ? contentString += '<i class="fas fa-bolt"></i>' : console.log("Fast Charging is disabled");
-            //}
-            //catch (error) {
-            //    console.log(error);
-            //}
+            if (GoogleMaps.markers[i].Connections[0].NumberOfPoints) {
+                contentString += '<i class="fas fa-gas-pump"></i>';
+            }
+            if (GoogleMaps.markers[i].Connections[0].Level.IsFastChargeCapable) {
+                contentString += '<i class="fas fa-bolt"></i>';
+            }
+            
             contentString += '</p>';
             contentString += '</div>';
 

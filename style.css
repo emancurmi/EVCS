@@ -20,6 +20,14 @@ select{
     padding: 20px 0 20px 0;
 }
 
+.gm-style-iw gm-style-iw-c {
+    max-width: unset !important;
+}
+
+.gm-style-iw-d {
+    max-width: unset !important;
+}
+
 footer {
     display: flex;
     flex-direction: row;
