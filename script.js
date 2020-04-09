@@ -203,21 +203,16 @@ document.getElementById("btnsubmit").addEventListener("click", updateMap);
 function updateMap() {
     let jsselconnectors = document.getElementById('jsselconnectors');
     CarInfo.connectiontype = jsselconnectors.value;
-
-    OpenMapsAPI.queryurl = '&latitude=' + CarInfo.cords.lat + '&longitude=' + CarInfo.cords.lng + '&connectiontypeid=' + CarInfo.connectiontype + '&distance=10';
-
     startlocating();
-
-    
 };
 
 
 function startlocating() {
 
     function success(position) {
-
         CarInfo.cords.lat = OpenMapsAPI.cords.lat = parseFloat(position.coords.latitude);
         CarInfo.cords.lng = OpenMapsAPI.cords.lng = parseFloat(position.coords.longitude);
+        OpenMapsAPI.queryurl = '&latitude=' + CarInfo.cords.lat + '&longitude=' + CarInfo.cords.lng + '&connectiontypeid=' + CarInfo.connectiontype + '&distance=10';
         initMap();
     }
 
@@ -242,9 +237,6 @@ let map;
 let markers = [];
 let InforObj = [];
 
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
 
 function getcharginstationsinfo() {
     console.log(OpenMapsAPI.src + OpenMapsAPI.queryurl);
@@ -305,12 +297,12 @@ async function renderResults(responseJson) {
                 console.log(error);
             }
 
-            try {
-                (GoogleMaps.markers[i].Connections.Level.Comments != null) ? contentString += 'Comments: ' + GoogleMaps.markers[i].Connections.Level.Comments + '<br/>' : console.log("Pay at location is null");
-            }
-            catch (error) {
-                console.log(error);
-            }
+            //try {
+            //    (GoogleMaps.markers[i].Connections[0].Level.Comments != null) ? contentString += 'Comments: ' + GoogleMaps.markers[i].Connections[0].Level.Comments + '<br/>' : console.log("Pay at location is null");
+            //}
+            //catch (error) {
+            //    console.log(error);
+            //}
 
             try {
                 contentString += 'Distance: ' + GoogleMaps.markers[i].AddressInfo.distance + ' Miles <br/>';
@@ -322,21 +314,21 @@ async function renderResults(responseJson) {
             contentString += '</p>';
             contentString += '<p>';
 
-            try {
-                for (let i = 0; i < GoogleMaps.markers[i].Connections.NumberOfPoints; i++) {
-                    contentString += '<i class="fas fa-gas-pump"></i>';
-                }
-            }
-            catch (error) {
-                console.log(error);
-            }
-            contentString += '</br>';
-            try {
-                (GoogleMaps.markers[i].Connections.Level.IsFastChargeCapable == true) ? contentString += '<i class="fas fa-bolt"></i>' : console.log("Fast Charging is disabled");
-            }
-            catch (error) {
-                console.log(error);
-            }
+            //try {
+            //    for (let i = 0; i < GoogleMaps.markers[i].Connections[0].NumberOfPoints; i++) {
+            //        contentString += '<i class="fas fa-gas-pump"></i>';
+            //    }
+            //}
+            //catch (error) {
+            //    console.log(error);
+            //}
+            //contentString += '</br>';
+            //try {
+            //    (GoogleMaps.markers[i].Connections[0].Level.IsFastChargeCapable == true) ? contentString += '<i class="fas fa-bolt"></i>' : console.log("Fast Charging is disabled");
+            //}
+            //catch (error) {
+            //    console.log(error);
+            //}
             contentString += '</p>';
             contentString += '</div>';
 
