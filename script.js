@@ -2,7 +2,10 @@
 
 let STORE = {
     lang: "en",
-    status: ""
+    status: "",
+    map,
+    markers:[],
+    InforObj:[]
 };
 
 let GoogleMaps = {
@@ -213,12 +216,6 @@ function updateMap() {
 
 document.getElementById("btndemosubmit").addEventListener("click", updateDemoMap);
 
-function updateMap() {
-    let jsselconnectors = document.getElementById('jsselconnectors');
-    CarInfo.connectiontype = jsselconnectors.value;
-    startlocating();
-};
-
 function updateDemoMap() {
     let jsselconnectors = document.getElementById('jsselconnectors');
     CarInfo.connectiontype = jsselconnectors.value;
@@ -229,7 +226,6 @@ function updateDemoMap() {
     OpenMapsAPI.queryurl = '&latitude=' + CarInfo.cords.lat + '&longitude=' + CarInfo.cords.lng + '&connectiontypeid=' + CarInfo.connectiontype + '&distance=10';
     initMap();
 };
-
 
 function startlocating() {
 
@@ -256,10 +252,6 @@ function startlocating() {
     }
 };
 
-
-let map;
-let markers = [];
-let InforObj = [];
 
 
 function getcharginstationsinfo() {
@@ -321,7 +313,7 @@ async function renderResults(responseJson) {
 
             const marker = new google.maps.Marker({
                 position: { lat: GoogleMaps.markers[i].AddressInfo.Latitude, lng: GoogleMaps.markers[i].AddressInfo.Longitude },
-                map: map
+                map: STORE.map
             });
 
             const infowindow = new google.maps.InfoWindow({
@@ -332,27 +324,26 @@ async function renderResults(responseJson) {
             marker.addListener('click', function () {
                 closeOtherInfo();
                 infowindow.open(marker.get('map'), marker);
-                InforObj[0] = infowindow;
+                STORE.InforObj[0] = infowindow;
             });
         }
     }
 };
 
 function closeOtherInfo() {
-    if (InforObj.length > 0) {
+    if (STORE.InforObj.length > 0) {
         /* detach the info-window from the marker ... undocumented in the API docs */
-        InforObj[0].set("marker", null);
+        STORE.InforObj[0].set("marker", null);
         /* and close it */
-        InforObj[0].close();
+        STORE.InforObj[0].close();
         /* blank the array */
-        InforObj.length = 0;
+        STORE.InforObj.length = 0;
     }
 }
 
-
 function initMap() {
     let marker = { lat: CarInfo.cords.lat, lng: CarInfo.cords.lng };
-    map = new google.maps.Map(document.getElementById('map'), {
+    STORE.map = new google.maps.Map(document.getElementById('map'), {
         zoom: 13,
         center: marker
     });

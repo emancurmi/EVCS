@@ -2,30 +2,36 @@
     margin: 0;
     padding: 0;
 }
+
 header{
+    padding: 30px;
 }
+
 content{
     display:flex;
-    flex-direction:row;
+    flex-direction:column;
+    align-content:space-around;
+    padding: 20px;
+}
+
+content .blue{
+
+}
+
+form{
+    display:flex;
+    flex-direction:column;
     align-content:space-around;
     padding: 20px;
 }
 
 select{
-    width: 200px;
+    width: 100%;
 }
 
 #map {
-    height: 50%;
+    height: 300px;
     padding: 20px 0 20px 0;
-}
-
-.gm-style-iw gm-style-iw-c {
-    max-width: unset !important;
-}
-
-.gm-style-iw-d {
-    max-width: unset !important;
 }
 
 footer {
@@ -34,4 +40,13 @@ footer {
     justify-content: center;
     align-content: center;
     padding: 20px;
+}
+
+@media screen and (max-width: 1025px) {
+    
+}
+
+/* On screens that are 600px or less, set the background color to olive */
+@media screen and (max-width: 600px) {
+    
 }
