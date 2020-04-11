@@ -3,149 +3,145 @@
 let STORE = {
     lang: "en",
     status: "",
-    map,
-    markers:[],
-    InforObj:[]
+
+    GoogleMaps: {
+        src: "https://maps.googleapis.com/maps/api/js?callback=initMap&key=AIzaSyCqUuyEgb8KQ-sXs3nKkiSesNpGX4aROJw&language=",
+        map,
+        markers: [],
+        InforObj: []
+    },
+
+    CarInfo: {
+        carbrand: "",
+        carmodel: "",
+        connectiontype: "",
+        cords: {
+            lat: 0,
+            lng: 0
+        }
+    },
+
+    OpenMapsAPI : {
+        src: "https://api.openchargemap.io/v3/poi/?output=json",
+        cords: {
+            lat: 0,
+            lng: 0
+        },
+        distance: "",
+        countrycode: "",
+        connectiontypeid: "",
+        limit: 10,
+        queryurl: ""
+    },
+
+    CarsDB :[
+        {
+            brand: "Fiat",
+            model: "500e",
+            chargingport: [22, 9]
+        },
+        {
+            brand: "Honda",
+            model: "Clarity",
+            chargingport: [22]
+        },
+        {
+            brand: "Nissan",
+            model: "Leaf",
+            chargingport: [9]
+        },
+        {
+            brand: "Tesla",
+            model: "Model-X",
+            chargingport: [30, 27]
+        },
+        {
+            brand: "BMW",
+            model: "i3",
+            chargingport: [9]
+        },
+        {
+            brand: "Kia",
+            model: "Niro",
+            chargingport: [1, 2]
+        },
+        {
+            brand: "Volkswagen",
+            model: "e-Golf",
+            chargingport: [2]
+        },
+        {
+            brand: "Hyundai",
+            model: "ioniq",
+            chargingport: [1]
+        },
+        {
+            brand: "Chevrolet",
+            model: "Bolt",
+            chargingport: [22, 9]
+        },
+        {
+            brand: "Hyundai",
+            model: "Kona",
+            chargingport: [22, 9]
+        },
+        {
+            brand: "Audi",
+            model: "e-tron",
+            chargingport: [9]
+        },
+        {
+            brand: "Jaguar",
+            model: "I-Pace",
+            chargingport: [9]
+        },
+        {
+            brand: "Tesla",
+            model: "Model-3",
+            chargingport: [30, 27]
+        },
+        {
+            brand: "Kia",
+            model: "Soul",
+            chargingport: [9]
+        },
+        {
+            brand: "Tesla",
+            model: "Model-S",
+            chargingport: [30, 27]
+        }
+    ],
+
+    ChargingPortDB :[
+        {
+            connectiontypeid: "22",
+            connectionname: "NEMA 5-15R"
+        },
+        {
+            connectiontypeid: "1",
+            connectionname: "SAE J1772-2009"
+        },
+        {
+            connectiontypeid: "30",
+            connectionname: "Tesla Charging Station"
+        },
+        {
+            connectiontypeid: "9",
+            connectionname: "NEMA 5-20R"
+        },
+        {
+            connectiontypeid: "27",
+            connectionname: "Tesla Supercharger"
+        },
+        {
+            connectiontypeid: "2",
+            connectionname: "CHAdeMO"
+        }
+    ]
 };
 
-let GoogleMaps = {
-    src: "https://maps.googleapis.com/maps/api/js?callback=initMap&key=AIzaSyCqUuyEgb8KQ-sXs3nKkiSesNpGX4aROJw&language=",
-    markers: []
-};
 
-let CarInfo = {
-    carbrand: "",
-    carmodel: "",
-    connectiontype: "",
-    cords: {
-        lat: 0,
-        lng: 0
-    }
-};
-
-let OpenMapsAPI = {
-    src: "https://api.openchargemap.io/v3/poi/?output=json",
-    cords: {
-        lat: 0,
-        lng: 0
-    },
-    distance: "",
-    countrycode: "",
-    connectiontypeid: "",
-    limit: 10,
-    queryurl: ""
-};
-
-let CarsDB = [
-    {
-        brand: "Fiat",
-        model: "500e",
-        chargingport:[22, 9]
-    },
-    {
-        brand: "Honda",
-        model: "Clarity",
-        chargingport: [22]
-    },
-    {
-        brand: "Nissan",
-        model: "Leaf",
-        chargingport: [9]
-    },
-    {
-        brand: "Tesla",
-        model: "Model-X",
-        chargingport: [30, 27]
-    },
-    {
-        brand: "BMW",
-        model: "i3",
-        chargingport: [9]
-    },
-    {
-        brand: "Kia",
-        model: "Niro",
-        chargingport: [1,2]
-    },
-    {
-        brand: "Volkswagen",
-        model: "e-Golf",
-        chargingport: [2]
-    },
-    {
-        brand: "Hyundai",
-        model: "ioniq",
-        chargingport: [1]
-    },
-    {
-        brand: "Chevrolet",
-        model: "Bolt",
-        chargingport: [22,9]
-    },
-    {
-        brand: "Hyundai",
-        model: "Kona",
-        chargingport: [22,9]
-    },
-    {
-        brand: "Audi",
-        model: "e-tron",
-        chargingport: [9]
-    },
-    {
-        brand: "Jaguar",
-        model: "I-Pace",
-        chargingport: [9]
-    },
-    {
-        brand: "Tesla",
-        model: "Model-3",
-        chargingport: [30, 27]
-    },
-    {
-        brand: "Kia",
-        model: "Soul",
-        chargingport: [9]
-    },
-    {
-        brand: "Tesla",
-        model: "Model-S",
-        chargingport: [30, 27]
-    }
-];
-
-let ChargingPortDB = [
-    {
-        connectiontypeid: "22",
-        connectionname : "NEMA 5-15R"
-    },
-    {
-        connectiontypeid : "1",
-        connectionname : "SAE J1772-2009"
-    },
-    {
-        connectiontypeid : "30",
-        connectionname : "Tesla Charging Station"
-    },
-    {
-        connectiontypeid : "9",
-        connectionname : "NEMA 5-20R"
-    },
-    {
-        connectiontypeid : "27",
-        connectionname : "Tesla Supercharger"
-    },
-    {
-        connectiontypeid : "2",
-        connectionname : "CHAdeMO"
-    }
-];
-
-document.addEventListener('DOMContentLoaded', function () {
-    generateform();
-});
-
-function generateform() {
+function start() {
     generatebrands();
 };
 
@@ -154,13 +150,14 @@ function generatebrands() {
     jsselbrands.innerHTML = "";
 
     let tempbrandarray = [];
-    for (let x = 0; x < CarsDB.length; x++) {
+    
+    for (let x = 0; x < STORE.CarsDB.length; x++) {
 
-        if (tempbrandarray.indexOf(CarsDB[x].brand) == -1) {
-            tempbrandarray.push(CarsDB[x].brand);
+        if (tempbrandarray.indexOf(STORE.CarsDB[x].brand) == -1) {
+            tempbrandarray.push(STORE.CarsDB[x].brand);
         }
     }
-
+    tempbrandarray.sort();
     for (let i = 0; i < tempbrandarray.length; i++) {
         jsselbrands.innerHTML += "<option value=" + tempbrandarray[i] + ">" + tempbrandarray[i] + "</option>"
     }
@@ -168,16 +165,16 @@ function generatebrands() {
 };
 
 function generatemodels() {
-    let jsselbrands = document.getElementById('jsselbrands');
-    CarInfo.brand = jsselbrands.value;
+    let jsselbrands = $('#jsselbrands').value;
+    STORE.CarInfo.brand = jsselbrands.value;
     let jsselmodels = document.getElementById('jsselmodels');
     jsselmodels.innerHTML = "";
 
-    for (let i = 0; i < CarsDB.length; i++)
+    for (let i = 0; i < STORE.CarsDB.length; i++)
     {
-        if (CarsDB[i].brand == CarInfo.brand) {
+        if (STORE.CarsDB[i].brand == STORE.CarInfo.brand) {
             
-            jsselmodels.innerHTML += "<option value=" + CarsDB[i].model + ">" + CarsDB[i].model + "</option>";
+            jsselmodels.innerHTML += "<option value=" + STORE.CarsDB[i].model + ">" + STORE.CarsDB[i].model + "</option>";
         }
     }
     generateconnections();
@@ -185,16 +182,16 @@ function generatemodels() {
 
 function generateconnections() {
     let jsselmodels = document.getElementById('jsselmodels');
-    CarInfo.model = jsselmodels.value;
+    STORE.CarInfo.model = jsselmodels.value;
     let jsselconnectors = document.getElementById('jsselconnectors');
     jsselconnectors.innerHTML = "";
 
-    for (let i = 0; i < CarsDB.length; i++) {
-        if (CarsDB[i].model == CarInfo.model) {
-            for (let j = 0; j < CarsDB[i].chargingport.length; j++) {
-                for (let k = 0; k < ChargingPortDB.length; k++) {
-                    if (ChargingPortDB[k].connectiontypeid == CarsDB[i].chargingport[j]) {
-                        jsselconnectors.innerHTML += "<option value=" + CarsDB[i].chargingport[j] + ">" + ChargingPortDB[k].connectionname + "</option>";
+    for (let i = 0; i < STORE.CarsDB.length; i++) {
+        if (STORE.CarsDB[i].model == STORE.CarInfo.model) {
+            for (let j = 0; j < STORE.CarsDB[i].chargingport.length; j++) {
+                for (let k = 0; k < STORE.ChargingPortDB.length; k++) {
+                    if (STORE.ChargingPortDB[k].connectiontypeid == STORE.CarsDB[i].chargingport[j]) {
+                        jsselconnectors.innerHTML += "<option value=" + STORE.CarsDB[i].chargingport[j] + ">" + STORE.ChargingPortDB[k].connectionname + "</option>";
                     }
                 }
             }
@@ -202,37 +199,29 @@ function generateconnections() {
     }
 };
 
-document.getElementById("jsselbrands").onchange = generatemodels;
-
-document.getElementById("jsselmodels").onchange = generateconnections;
-
-document.getElementById("btnsubmit").addEventListener("click", updateMap);
-
 function updateMap() {
     let jsselconnectors = document.getElementById('jsselconnectors');
-    CarInfo.connectiontype = jsselconnectors.value;
+    STORE.CarInfo.connectiontype = jsselconnectors.value;
     startlocating();
 };
 
-document.getElementById("btndemosubmit").addEventListener("click", updateDemoMap);
-
 function updateDemoMap() {
     let jsselconnectors = document.getElementById('jsselconnectors');
-    CarInfo.connectiontype = jsselconnectors.value;
+    STORE.CarInfo.connectiontype = jsselconnectors.value;
 
-    CarInfo.cords.lat = OpenMapsAPI.cords.lat = parseFloat(40.7859464);
-    CarInfo.cords.lng = OpenMapsAPI.cords.lng = parseFloat(-73.97418739999999);
+    STORE.CarInfo.cords.lat = STORE.OpenMapsAPI.cords.lat = parseFloat(40.7859464);
+    STORE.CarInfo.cords.lng = STORE.OpenMapsAPI.cords.lng = parseFloat(-73.97418739999999);
 
-    OpenMapsAPI.queryurl = '&latitude=' + CarInfo.cords.lat + '&longitude=' + CarInfo.cords.lng + '&connectiontypeid=' + CarInfo.connectiontype + '&distance=10';
+    STORE.OpenMapsAPI.queryurl = '&latitude=' + STORE.CarInfo.cords.lat + '&longitude=' + STORE.CarInfo.cords.lng + '&connectiontypeid=' + STORE.CarInfo.connectiontype + '&distance=10';
     initMap();
 };
 
 function startlocating() {
 
     function success(position) {
-        CarInfo.cords.lat = OpenMapsAPI.cords.lat = parseFloat(position.coords.latitude);
-        CarInfo.cords.lng = OpenMapsAPI.cords.lng = parseFloat(position.coords.longitude);
-        OpenMapsAPI.queryurl = '&latitude=' + CarInfo.cords.lat + '&longitude=' + CarInfo.cords.lng + '&connectiontypeid=' + CarInfo.connectiontype + '&distance=10';
+        STORE.CarInfo.cords.lat = STORE.OpenMapsAPI.cords.lat = parseFloat(position.coords.latitude);
+        STORE.CarInfo.cords.lng = STORE.OpenMapsAPI.cords.lng = parseFloat(position.coords.longitude);
+        STORE.OpenMapsAPI.queryurl = '&latitude=' + STORE.CarInfo.cords.lat + '&longitude=' + STORE.CarInfo.cords.lng + '&connectiontypeid=' + STORE.CarInfo.connectiontype + '&distance=10';
         initMap();
     }
 
@@ -252,10 +241,8 @@ function startlocating() {
     }
 };
 
-
-
 function getcharginstationsinfo() {
-    fetch(OpenMapsAPI.src + OpenMapsAPI.queryurl)
+    fetch(STORE.OpenMapsAPI.src + STORE.OpenMapsAPI.queryurl)
         .then(response => response.json())
         .then(responseJson =>  renderResults(responseJson))
         .catch(error => alert(error));
@@ -269,41 +256,41 @@ async function renderResults(responseJson) {
     }
     else {
         
-        GoogleMaps.markers = responseJson;
+        STORE.GoogleMaps.markers = responseJson;
         
-        for (var i = 0; i < GoogleMaps.markers.length; i++) {
+        for (var i = 0; i < STORE.GoogleMaps.markers.length; i++) {
 
             let contentString = '<div id="mapcontent">';
             
-            if (GoogleMaps.markers[i].OperatorInfo && GoogleMaps.markers[i].OperatorInfo.Title){
-               contentString += '<h3>' + GoogleMaps.markers[i].OperatorInfo.Title + '</h3>';
+            if (STORE.GoogleMaps.markers[i].OperatorInfo && STORE.GoogleMaps.markers[i].OperatorInfo.Title){
+                contentString += '<h3>' + STORE.GoogleMaps.markers[i].OperatorInfo.Title + '</h3>';
             }
-            if (GoogleMaps.markers[i].OperatorInfo && GoogleMaps.markers[i].OperatorInfo.PhonePrimaryContact){
-               contentString += 'Contact Number: ' + GoogleMaps.markers[i].OperatorInfo.PhonePrimaryContact + '<br/>';
+            if (STORE.GoogleMaps.markers[i].OperatorInfo && STORE.GoogleMaps.markers[i].OperatorInfo.PhonePrimaryContact){
+                contentString += 'Contact Number: ' + STORE.GoogleMaps.markers[i].OperatorInfo.PhonePrimaryContact + '<br/>';
             }
 
-            if (GoogleMaps.markers[i].UsageType && GoogleMaps.markers[i].UsageType.IsMembershipRequired) {
+            if (STORE.GoogleMaps.markers[i].UsageType && STORE.GoogleMaps.markers[i].UsageType.IsMembershipRequired) {
                 contentString += 'Requires Membership <br/>';
             }
-            if (GoogleMaps.markers[i].UsageType && GoogleMaps.markers[i].UsageType.IsPayAtLocation) {
+            if (STORE.GoogleMaps.markers[i].UsageType && STORE.GoogleMaps.markers[i].UsageType.IsPayAtLocation) {
                 contentString += 'Pay at location <br/>';
             }
-            if (GoogleMaps.markers[i].Connections) {
-                contentString += GoogleMaps.markers[i].Connections[0].Level.Comments;
+            if (STORE.GoogleMaps.markers[i].Connections) {
+                contentString += STORE.GoogleMaps.markers[i].Connections[0].Level.Comments;
             }
 
-            if (GoogleMaps.markers[i].AddressInfo && GoogleMaps.markers[i].AddressInfo.distance) {
-                contentString += 'Distance: ' + GoogleMaps.markers[i].AddressInfo.distance + ' Miles <br/>';
+            if (STORE.GoogleMaps.markers[i].AddressInfo && STORE.GoogleMaps.markers[i].AddressInfo.distance) {
+                contentString += 'Distance: ' + STORE.GoogleMaps.markers[i].AddressInfo.distance + ' Miles <br/>';
             }
            
 
             contentString += '</p>';
             contentString += '<p>';
 
-            if (GoogleMaps.markers[i].Connections[0].NumberOfPoints) {
+            if (STORE.GoogleMaps.markers[i].Connections[0].NumberOfPoints) {
                 contentString += '<i class="fas fa-gas-pump"></i>';
             }
-            if (GoogleMaps.markers[i].Connections[0].Level.IsFastChargeCapable) {
+            if (STORE.GoogleMaps.markers[i].Connections[0].Level.IsFastChargeCapable) {
                 contentString += '<i class="fas fa-bolt"></i>';
             }
             
@@ -312,8 +299,8 @@ async function renderResults(responseJson) {
 
 
             const marker = new google.maps.Marker({
-                position: { lat: GoogleMaps.markers[i].AddressInfo.Latitude, lng: GoogleMaps.markers[i].AddressInfo.Longitude },
-                map: STORE.map
+                position: { lat: STORE.GoogleMaps.markers[i].AddressInfo.Latitude, lng: STORE.GoogleMaps.markers[i].AddressInfo.Longitude },
+                map: STORE.GoogleMaps.map
             });
 
             const infowindow = new google.maps.InfoWindow({
@@ -324,28 +311,36 @@ async function renderResults(responseJson) {
             marker.addListener('click', function () {
                 closeOtherInfo();
                 infowindow.open(marker.get('map'), marker);
-                STORE.InforObj[0] = infowindow;
+                STORE.GoogleMaps.InforObj[0] = infowindow;
             });
         }
     }
 };
 
 function closeOtherInfo() {
-    if (STORE.InforObj.length > 0) {
+    if (STORE.GoogleMaps.InforObj.length > 0) {
         /* detach the info-window from the marker ... undocumented in the API docs */
-        STORE.InforObj[0].set("marker", null);
+        STORE.GoogleMaps.InforObj[0].set("marker", null);
         /* and close it */
-        STORE.InforObj[0].close();
+        STORE.GoogleMaps.InforObj[0].close();
         /* blank the array */
-        STORE.InforObj.length = 0;
+        STORE.GoogleMaps.InforObj.length = 0;
     }
 }
 
 function initMap() {
-    let marker = { lat: CarInfo.cords.lat, lng: CarInfo.cords.lng };
-    STORE.map = new google.maps.Map(document.getElementById('map'), {
+    let marker = { lat: STORE.CarInfo.cords.lat, lng: STORE.CarInfo.cords.lng };
+    STORE.GoogleMaps.map = new google.maps.Map(document.getElementById('map'), {
         zoom: 13,
         center: marker
     });
     getcharginstationsinfo();
 };
+
+$(document).ready(function () {
+    start();
+    $("#jsselbrands").change(generatemodels);
+    $("#jsselmodels").change(generateconnections);
+    $("#btnsubmit").click(updateMap);
+    $("#btndemosubmit").click(updateDemoMap);
+});
