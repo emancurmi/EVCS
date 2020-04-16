@@ -199,6 +199,11 @@ function generateconnections() {
     }
 };
 
+function showaddressbar() {
+    let jschklocation = document.getElementById('jschklocation');
+    (jschklocation.val == true) ? document.getElementById('jstxtaddress').attributes(remove, hidden) : document.getElementById('jstxtaddress').attributes(remove, hidden);
+}
+
 function updateMap() {
     $("#map").show(1000);
     let jsselconnectors = document.getElementById('jsselconnectors');
@@ -344,6 +349,7 @@ $(document).ready(function () {
     start();
     $("#jsselbrands").change(generatemodels);
     $("#jsselmodels").change(generateconnections);
+    $("#jschklocation").check(showaddressbar);
     $("#btnsubmit").click(updateMap);
     $("#btndemosubmit").click(updateDemoMap);
 });
