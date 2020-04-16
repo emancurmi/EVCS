@@ -70,6 +70,7 @@ input[type=button] {
 #map {
     height: 300px;
     padding: 20px 0 20px 0;
+    display: none;
 }
 
 footer {
@@ -86,5 +87,17 @@ footer {
 
 /* On screens that are 600px or less, set the background color to olive */
 @media screen and (max-width: 600px) {
-    
+    content {
+        display: flex;
+        flex-direction: row;
+        align-content: space-around;
+        padding: 20px;
+    }
+
+    form {
+        display: flex;
+        flex-direction: row;
+        align-content: space-around;
+        padding: 20px;
+    }
 }

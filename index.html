@@ -11,13 +11,12 @@
     <header>
         <h1>Electronic Vehicle Charging Station</h1>
     </header>
-    <content class="blue">
+    <content>
         <section id="about">
-            <p>ECVS is a map of the world created to help users find a charging station for their Electric Vehicle.</p>
+            <h3>ECVS is a map of the world created to help users find a charging station for their Electric Vehicle.</h3>
         </section>
         <section id="howtouse">
-            <p>
-                Quick steps to start
+            <h3>Quick steps to start</h3>
                 <ul>
                     <li>Select your Car Brand</li>
                     <li>Select your Model</li>
@@ -25,18 +24,22 @@
                     <li>Allow our app to get your location</li>
                     <li>Browse the markers for additional details about the chargin spot</li>
                 </ul>
-            </p>
+            
         </section>
     </content>
     <content>
         <section id="form">
             <form>
-                <label for="jsselbrands">Car Brand</label>
-                <select id="jsselbrands"></select>
-                <label for="jsselmodels">Car Model</label>
-                <select id="jsselmodels"></select>
-                <label for="jsselconnectors">Available Connector</label>
-                <select id="jsselconnectors" typeof="dropdown"></select>
+                    <label for="jsselbrands">Car Brand</label>
+                    <select id="jsselbrands"></select>
+                    <label for="jsselmodels">Car Model</label>
+                    <select id="jsselmodels"></select>
+                    <label for="jsselconnectors">Available Connector</label>
+                    <select id="jsselconnectors" typeof="dropdown"></select>
+                    <label for="jstxtaddress">Enter Address</label>
+                    <input type="text" id="jstxtaddress" value="" placeholder="Enter address"/>
+                    <label for="jschklocation">Get Automatically from Browser</label>
+                    <input type="checkbox" id="jschklocation" value="AutoLocate" />
                 <input id="btnsubmit" type=button value="Show All Available Connectors">
                 <input id="btndemosubmit" type=button value="Demo Location">
             </form>

@@ -165,7 +165,7 @@ function generatebrands() {
 };
 
 function generatemodels() {
-    let jsselbrands = $('#jsselbrands').value;
+    let jsselbrands = document.getElementById('jsselbrands');
     STORE.CarInfo.brand = jsselbrands.value;
     let jsselmodels = document.getElementById('jsselmodels');
     jsselmodels.innerHTML = "";
@@ -200,12 +200,14 @@ function generateconnections() {
 };
 
 function updateMap() {
+    $("#map").show(1000);
     let jsselconnectors = document.getElementById('jsselconnectors');
     STORE.CarInfo.connectiontype = jsselconnectors.value;
     startlocating();
 };
 
 function updateDemoMap() {
+    $("#map").show;
     let jsselconnectors = document.getElementById('jsselconnectors');
     STORE.CarInfo.connectiontype = jsselconnectors.value;
 
@@ -245,7 +247,7 @@ function getcharginstationsinfo() {
     fetch(STORE.OpenMapsAPI.src + STORE.OpenMapsAPI.queryurl)
         .then(response => response.json())
         .then(responseJson =>  renderResults(responseJson))
-        .catch(error => alert(error));
+        .catch(error => alert("We have encountered an error loading the data. Please try again."));
 };
 
 async function renderResults(responseJson) {
@@ -329,6 +331,7 @@ function closeOtherInfo() {
 }
 
 function initMap() {
+    
     let marker = { lat: STORE.CarInfo.cords.lat, lng: STORE.CarInfo.cords.lng };
     STORE.GoogleMaps.map = new google.maps.Map(document.getElementById('map'), {
         zoom: 13,
