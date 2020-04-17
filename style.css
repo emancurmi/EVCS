@@ -1,29 +1,20 @@
 ﻿﻿html, body {
-    margin: 0;
-    padding: 0;
+    margin: 20px;
 }
 
 header{
     padding: 30px;
 }
 
-content{
-    display:flex;
-    flex-direction:column;
-    align-content:space-around;
-    padding: 20px;
+content {
 }
 
 content blue{
     background-color: #0f52ba;
     color: #ffffff;
-
 }
 
-form{
-    display:flex;
-    flex-direction:column;
-    align-content:space-around;
+form {
     padding: 20px;
 }
 
@@ -32,7 +23,6 @@ label {
 }
 
 input {
-    width: 100%;
     padding: 10px;
     margin-top: 10px;
     margin-bottom: 35px;
@@ -43,7 +33,6 @@ input {
 }
 
 select {
-    width: 100%;
     padding: 10px 22px;
     margin-bottom: 10px;
     border: none;
@@ -74,30 +63,136 @@ input[type=button] {
 }
 
 footer {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-content: center;
     padding: 20px;
 }
 
-@media screen and (max-width: 1025px) {
-    
+
+.flex-grid {
+    display: block;
 }
 
 /* On screens that are 600px or less, set the background color to olive */
-@media screen and (max-width: 600px) {
-    content {
+@media screen and (min-width: 600px) {
+
+    .flex-grid {
         display: flex;
-        flex-direction: row;
-        align-content: space-around;
-        padding: 20px;
+        flex-flow: wrap;
     }
 
-    form {
+    .col-1 {
+        flex: 0 0 8.3333%
+    }
+
+    .col-2 {
+        flex: 0 0 16.6666%
+    }
+
+    .col-3 {
+        flex: 0 0 25%
+    }
+
+    .col-4 {
+        flex: 0 0 33.3333%
+    }
+
+    .col-5 {
+        flex: 0 0 41.6666%
+    }
+
+    .col-6 {
+        flex: 0 0 50%
+    }
+
+    .col-7 {
+        flex: 0 0 58.3333%
+    }
+
+    .col-8 {
+        flex: 0 0 66.6666%
+    }
+
+    .col-9 {
+        flex: 0 0 75%
+    }
+
+    .col-10 {
+        flex: 0 0 83.3333%
+    }
+
+    .col-11 {
+        flex: 0 0 91.6666%
+    }
+
+    .col-12 {
+        flex: 0 0 100%
+    }
+
+    [class*="col-"] {
+        margin: 0 0 10px 0;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+}
+
+@media screen and (min-width: 1000px) {
+    .flex-grid {
         display: flex;
-        flex-direction: row;
-        align-content: space-around;
-        padding: 20px;
+        flex-flow: wrap;
+    }
+
+    .col-1 {
+        flex: 0 0 8.3333%
+    }
+
+    .col-2 {
+        flex: 0 0 16.6666%
+    }
+
+    .col-3 {
+        flex: 0 0 25%
+    }
+
+    .col-4 {
+        flex: 0 0 33.3333%
+    }
+
+    .col-5 {
+        flex: 0 0 41.6666%
+    }
+
+    .col-6 {
+        flex: 0 0 50%
+    }
+
+    .col-7 {
+        flex: 0 0 58.3333%
+    }
+
+    .col-8 {
+        flex: 0 0 66.6666%
+    }
+
+    .col-9 {
+        flex: 0 0 75%
+    }
+
+    .col-10 {
+        flex: 0 0 83.3333%
+    }
+
+    .col-11 {
+        flex: 0 0 91.6666%
+    }
+
+    .col-12 {
+        flex: 0 0 100%
+    }
+
+    [class*="col-"] {
+        margin: 0 0 10px 0;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
     }
 }
