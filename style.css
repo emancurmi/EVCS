@@ -74,11 +74,14 @@ input[type=button] {
         background: #0080ff;
     }
 
+.mapplaceholder{
+    display:none;
+}
+
 #map {
     height: 300px;
     width: 100%;
     padding: 20px 0 20px 0;
-    display: none;
 }
 
 footer {
@@ -105,6 +108,10 @@ footer {
     .form{
         width:40%;
         padding:20px;
+    }
+
+    .mapplaceholder{
+        width:100%;
     }
 
     footer {

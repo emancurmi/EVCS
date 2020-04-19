@@ -222,7 +222,7 @@ function generateconnections() {
 };
 
 function updateMap() {
-    $("#map").show(1000);
+    $(".mapplaceholder").show(1000);
 
     let jsselconnectors = document.getElementById('jsselconnectors');
 
