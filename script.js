@@ -154,6 +154,19 @@ function start() {
     generatebrands();
 };
 
+function checkboxstatechage() {
+    console.log("state changed");
+    if (document.getElementById("jschklocation").checked === true) {
+        console.log("true");
+        
+        $('#jstxtaddress').attr('disabled', true).attr("disabled", true).css("background-color", "#ddd");
+    }
+    else {
+        console.log("false");
+        $('#jstxtaddress').attr('disabled', true).attr("disabled", false).css("background-color", "#FFF");
+    }
+}
+
 function generatebrands() {
     let jsselbrands = document.getElementById('jsselbrands');
     jsselbrands.innerHTML = "";
@@ -375,5 +388,6 @@ $(document).ready(function () {
     start();
     $("#jsselbrands").change(generatemodels);
     $("#jsselmodels").change(generateconnections);
+    $("#jschklocation").change(checkboxstatechage);
     $("#btnsubmit").click(updateMap);
 });
