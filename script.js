@@ -11,6 +11,15 @@ let STORE = {
         InforObj: []
     },
 
+    GoogleLocation: {
+        src: "https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyCqUuyEgb8KQ-sXs3nKkiSesNpGX4aROJw&address=",
+        quieryurl: "",
+        cords: {
+            lat: 0,
+            lng: 0
+        }
+    },
+
     CarInfo: {
         carbrand: "",
         carmodel: "",
@@ -199,28 +208,28 @@ function generateconnections() {
     }
 };
 
-function showaddressbar() {
-    let jschklocation = document.getElementById('jschklocation');
-    (jschklocation.val == true) ? document.getElementById('jstxtaddress').attributes(remove, hidden) : document.getElementById('jstxtaddress').attributes(remove, hidden);
-}
-
 function updateMap() {
     $("#map").show(1000);
+
     let jsselconnectors = document.getElementById('jsselconnectors');
+
     STORE.CarInfo.connectiontype = jsselconnectors.value;
-    startlocating();
-};
+   
+    if (document.getElementById("jschklocation").checked === false) {
 
-function updateDemoMap() {
-    $("#map").show;
-    let jsselconnectors = document.getElementById('jsselconnectors');
-    STORE.CarInfo.connectiontype = jsselconnectors.value;
+        STORE.GoogleLocation.queryurl = (document.getElementById("jstxtaddress").value).split(' ').join('+');
 
-    STORE.CarInfo.cords.lat = STORE.OpenMapsAPI.cords.lat = parseFloat(40.7859464);
-    STORE.CarInfo.cords.lng = STORE.OpenMapsAPI.cords.lng = parseFloat(-73.97418739999999);
+        if (STORE.GoogleLocation.queryurl == "") {
+            alert("Please enter Address");
+        }
+        else {
+            getusersaddressinfo();
+        }
+    }
 
-    STORE.OpenMapsAPI.queryurl = '&latitude=' + STORE.CarInfo.cords.lat + '&longitude=' + STORE.CarInfo.cords.lng + '&connectiontypeid=' + STORE.CarInfo.connectiontype + '&distance=10';
-    initMap();
+    else {
+        startlocating();
+    }
 };
 
 function startlocating() {
@@ -228,6 +237,7 @@ function startlocating() {
     function success(position) {
         STORE.CarInfo.cords.lat = STORE.OpenMapsAPI.cords.lat = parseFloat(position.coords.latitude);
         STORE.CarInfo.cords.lng = STORE.OpenMapsAPI.cords.lng = parseFloat(position.coords.longitude);
+
         STORE.OpenMapsAPI.queryurl = '&latitude=' + STORE.CarInfo.cords.lat + '&longitude=' + STORE.CarInfo.cords.lng + '&connectiontypeid=' + STORE.CarInfo.connectiontype + '&distance=10';
         initMap();
     }
@@ -246,6 +256,23 @@ function startlocating() {
         STORE.status = 'Locating…';
         navigator.geolocation.getCurrentPosition(success, error);
     }
+};
+
+function getusersaddressinfo() {
+    console.log(STORE.GoogleLocation.src + STORE.GoogleLocation.queryurl);
+    fetch(STORE.GoogleLocation.src + STORE.GoogleLocation.queryurl)
+        .then(response => response.json())
+        .then(responseJson => storecoords(responseJson))
+        .catch(error => alert("We have encountered an error loading the data. Please try again."));
+};
+
+function storecoords(responseJson) {
+
+    STORE.CarInfo.cords.lat = STORE.OpenMapsAPI.cords.lat = STORE.GoogleLocation.cordslat = responseJson.results[0].geometry.location.lat;
+    STORE.CarInfo.cords.lng = STORE.OpenMapsAPI.cords.lng = STORE.GoogleLocation.cords.lng = responseJson.results[0].geometry.location.lng;
+
+    STORE.OpenMapsAPI.queryurl = '&latitude=' + STORE.CarInfo.cords.lat + '&longitude=' + STORE.CarInfo.cords.lng + '&connectiontypeid=' + STORE.CarInfo.connectiontype + '&distance=10';
+    initMap();
 };
 
 function getcharginstationsinfo() {
@@ -289,7 +316,6 @@ async function renderResults(responseJson) {
             if (STORE.GoogleMaps.markers[i].AddressInfo && STORE.GoogleMaps.markers[i].AddressInfo.distance) {
                 contentString += 'Distance: ' + STORE.GoogleMaps.markers[i].AddressInfo.distance + ' Miles <br/>';
             }
-           
 
             contentString += '</p>';
             contentString += '<p>';
@@ -349,7 +375,5 @@ $(document).ready(function () {
     start();
     $("#jsselbrands").change(generatemodels);
     $("#jsselmodels").change(generateconnections);
-    $("#jschklocation").check(showaddressbar);
     $("#btnsubmit").click(updateMap);
-    $("#btndemosubmit").click(updateDemoMap);
 });

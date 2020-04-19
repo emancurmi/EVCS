@@ -7,15 +7,15 @@
     <title>Electronic Vehicle Charging Station</title>
     <link rel="stylesheet" href="style.css" />
 </head>
-<body class="flex-grid">
-    <header class="col-12">
+<body>
+    <header>
         <h1>Electronic Vehicle Charging Station</h1>
     </header>
-    <content class="col-12">
-        <section id="about">
+    <content>
+        <section>
             <h3>ECVS is a map of the world created to help users find a charging station for their Electric Vehicle.</h3>
         </section>
-        <section id="howtouse">
+        <section>
             <h3>Quick steps to start</h3>
                 <ul>
                     <li>Select your Car Brand</li>
@@ -26,30 +26,31 @@
                 </ul>
         </section>
     </content>
-    <content class="col-12">
-        <form id="form">
-            <label for="jsselbrands" class="col-2">Car Brand</label>
-            <select id="jsselbrands" class="col-10"></select>
-            <label for="jsselmodels" class="col-2">Car Model</label>
-            <select id="jsselmodels" class="col-2"></select>
-            <label for="jsselconnectors" class="col-2">Available Connector</label>
-            <select id="jsselconnectors" class="col-2"></select>
-            <div class="break"></div>
+    <content>
+        <form>
+            <label for="jsselbrands">Car Brand</label>
+            <select id="jsselbrands"></select>
+            <br />
+            <label for="jsselmodels">Car Model</label>
+            <select id="jsselmodels"></select>
+            <br />
+            <label for="jsselconnectors">Available Connector</label>
+            <select id="jsselconnectors"></select>
+            <br />
             <label for="jstxtaddress">Enter Address</label>
+            (<input type="checkbox" id="jschklocation" value="AutoLocate" />
+            <label for="jschklocation">Get Automatically from Browser</label>)
             <input type="text" id="jstxtaddress" value="" placeholder="Enter address" />
-            <label for="jschklocation">Get Automatically from Browser</label>
-            <input type="checkbox" id="jschklocation" value="AutoLocate" />
-            <div class="break"></div>
+            <br />
             <input id="btnsubmit" type=button value="Show All Available Connectors">
-            <input id="btndemosubmit" type=button value="Demo Location">
+
         </form>
     </content>
-    <content class="col-12">
+    <content>
         <section id="map">
-
         </section>
     </content>
-    <footer class="col-12">
+    <footer>
         <a href="#">Copyright Eman Curmi</a>
     </footer>
     <script src="https://kit.fontawesome.com/c293a15b2a.js" crossorigin="anonymous"></script>
