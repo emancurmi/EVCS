@@ -1,7 +1,8 @@
 ﻿﻿html, body {
+    font-family: 'Quicksand', sans-serif;
     margin: 20px;
-    display:flex;
-    flex-direction:column;
+    display: flex;
+    flex-direction: column;
 }
 
 header{
@@ -84,7 +85,6 @@ footer {
     display: block;
     padding: 20px;
 }
-
 
 /* On screens that are 600px or less, set the background color to olive */
 @media screen and (min-width: 900px) {

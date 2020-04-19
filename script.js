@@ -233,7 +233,7 @@ function updateMap() {
         STORE.GoogleLocation.queryurl = (document.getElementById("jstxtaddress").value).split(' ').join('+');
 
         if (STORE.GoogleLocation.queryurl == "") {
-            alert("Please enter Address");
+            alert("Please enter Address or Check box for automatic location");
         }
         else {
             getusersaddressinfo();
