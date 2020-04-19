@@ -11,22 +11,26 @@
     <header>
         <h1>Electronic Vehicle Charging Station</h1>
     </header>
-    <content>
-        <section>
-            <h3>ECVS is a map of the world created to help users find a charging station for their Electric Vehicle.</h3>
-        </section>
-        <section>
+    <section class="content">
+        <content>
+            <h3>Electric Vehicle Charging Station (EVCS) is an application that can be used on desktop, tablets or phones to allow the user to search for a charging station in his location or in an address given by the user.</h3>
+        </content>
+        <content>
             <h3>Quick steps to start</h3>
+            <p>These instructions will get started on how to use this application.</p>
                 <ul>
                     <li>Select your Car Brand</li>
                     <li>Select your Model</li>
                     <li>Select your charging method</li>
-                    <li>Allow our app to get your location</li>
-                    <li>Browse the markers for additional details about the chargin spot</li>
+                    <li>You can enter the Address or Check the box to let the application get your location</li>
+                    <li>Click the Blue Button to start search</li>
+                    <li>If you ticked the box a message box will ask you for permision to get your current location</li>
+                    <li>Click Allow to continue</li>
+                    <li>Browse the markers for additional details about the charging spot</li>
                 </ul>
-        </section>
-    </content>
-    <content>
+        </content>
+    </section>
+    <section class="form">
         <form>
             <label for="jsselbrands">Car Brand</label>
             <select id="jsselbrands"></select>
@@ -45,11 +49,9 @@
             <input id="btnsubmit" type=button value="Show All Available Connectors">
 
         </form>
-    </content>
-    <content>
-        <section id="map">
-        </section>
-    </content>
+    </section>
+    <section id="map">
+    </section>
     <footer>
         <a href="#">Copyright Eman Curmi</a>
     </footer>
